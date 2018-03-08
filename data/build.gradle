@@ -12,8 +12,8 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "CLIENT_ID", "\"0828618b4ccd433a18bd10faded49cf3\""
-        buildConfigField "String", "CLIENT_SECRET", "\"bb305d9f42185c225ed34ee1fca1f812\""
+        buildConfigField "String", "CLIENT_ID", getMyApiKey("clientId")
+        buildConfigField "String", "CLIENT_SECRET", getMyApiKey("clientSecret")
         buildConfigField "String", "BASE_URL", "\"https://api.soundcloud.com/\""
 
     }
@@ -52,3 +52,10 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+static def getMyApiKey(String property){
+    Properties properties = new Properties()
+    properties.load(new FileInputStream("api-keys.properties"))
+    return "\"" + properties.getProperty(property) +"\""
+}
+
