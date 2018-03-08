@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Listn</string>
+    <string name="label_play">Play</string>
+    <string name="label_pause">Pause</string>
+    <string name="label_next">Next track</string>
+    <string name="label_previous">Previous Track</string>
+    <string name="search_for_songs">Search for songs</string>
+</resources>

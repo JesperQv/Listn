@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/progress_shadow</color>
+    <color name="colorPrimaryDark">#5100ca</color>
+    <color name="colorAccent">@color/light_red</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="light_red">#E57373</color>
+    <color name="red">#F44336</color>
+    <color name="darker_red">#C62828</color>
+
+    <color name="progress_grey">#363b46</color>
+    <color name="progress_blue">#2256ca</color>
+    <color name="progress_pink">#fa35a4</color>
+    <color name="progress_shadow">#cc8d00ff</color>
+
+    <color name="dark_grey_1">#21252f</color>
+    <color name="light_grey">#a0a6b6</color>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="player_bg_start">#21252f</color>
+    <color name="player_bg_end">#0e1015</color>
+    <color name="player_wave">#07090d</color>
+</resources>
