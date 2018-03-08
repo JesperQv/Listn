@@ -59,7 +59,7 @@ static def getMyApiKey(String property) {
         properties.load(new FileInputStream("api-keys.properties"))
         return "\"" + properties.getProperty(property) + "\""
     } catch (Exception ignored) {
-        return "noApiKey"
+        return "\"" + "noApiKey" + "\""
     }
 }
 
