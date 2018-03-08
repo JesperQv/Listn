@@ -1,12 +1,13 @@
 package com.jesperqvarfordt.listn.domain.usecase
 
 import com.jesperqvarfordt.listn.domain.player.MusicPlayer
+import com.jesperqvarfordt.listn.domain.usecase.base.UseCase
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 
 open class PlayUseCase(private val player: MusicPlayer,
-                  private val executionScheduler: Scheduler,
-                  private val uiScheduler: Scheduler) {
+                       executionScheduler: Scheduler,
+                       uiScheduler: Scheduler) : UseCase(executionScheduler, uiScheduler) {
 
     open fun execute(): Completable = player.play()
             .subscribeOn(executionScheduler)

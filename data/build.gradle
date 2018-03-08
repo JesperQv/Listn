@@ -53,9 +53,13 @@ repositories {
     mavenCentral()
 }
 
-static def getMyApiKey(String property){
+static def getMyApiKey(String property) {
     Properties properties = new Properties()
-    properties.load(new FileInputStream("api-keys.properties"))
-    return "\"" + properties.getProperty(property) +"\""
+    try {
+        properties.load(new FileInputStream("api-keys.properties"))
+        return "\"" + properties.getProperty(property) + "\""
+    } catch (Exception ignored) {
+        return "no api key"
+    }
 }
 
