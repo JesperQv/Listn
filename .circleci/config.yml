@@ -1,0 +1,113 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-25-alpha
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Build
+          command: ./gradlew
+
+  test:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-25-alpha
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Run Tests
+          command: ./gradlew test
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - store_test_results:
+          path: app/build/test-results
+
+  release:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-25-alpha
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - run: echo 'export KEYSTORE=${HOME}/sigining.keystore' >> $BASH_ENV
+      - run:
+          name: download keystore signing
+          command: bash ./misc/download_keystore.sh
+      - run:
+          name: create api keys file
+          command: touch api-keys.properties
+      - run:
+          name: populate api keys file
+          command: echo 'clientId = ${CLIENT_ID}' > api-keys.properties
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Release Build
+          command: ./gradlew assembleRelease
+      - run:
+          name: Save Apk
+          command: cp -r app/build/outputs/apk/release app/build/apk
+      - store_artifacts:
+          path: app/build/apk
+          destination: apk
+      - store_test_results:
+          path: app/build/release-apk
+
+workflows:
+  version: 2
+  build_test_sign:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - hold:
+          type: approval
+          requires:
+           - test
+      - release:
+          requires:
+            - hold
+

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="data"
+            type="com.jesperqvarfordt.listn.domain.model.player.CombinedInfo" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/player_bg_gradient">
+
+        <com.jesperqvarfordt.listn.common.view.waveview.WaveView
+            android:id="@+id/waveView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_above="@id/black_bg"
+            android:layout_centerVertical="true"
+            app:waveAmplitude="10.25"
+            app:waveBackgroundColor="@color/transparent"
+            app:waveColor="@color/player_wave"
+            app:waveDensity="5.0"
+            app:waveFrequency="2.0"
+            app:waveNumberOfWaves="5"
+            app:wavePhaseShift="-0.05"
+            app:wavePrimaryLineWidth="3.0"
+            app:waveSecondaryLineWidth="1.0"
+            app:waveXAxisPositionMultiplier="0.5" />
+
+        <View
+            android:id="@+id/black_bg"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/player_wave" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp"
+            tools:context="com.jesperqvarfordt.listn.player.PlayerActivity">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:clipToPadding="false"
+                android:padding="30dp">
+
+                <ImageView
+                    android:id="@+id/coverImage"
+                    android:layout_width="280dp"
+                    android:layout_height="280dp"
+                    android:layout_gravity="center_horizontal"
+                    android:elevation="20dp"
+                    app:imageUrl="@{data.coverUrl}" />
+
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/raleway_bold"
+                android:letterSpacing="0.02"
+                android:lines="1"
+                android:text="@{data.title}"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/montserrat_light"
+                android:lines="1"
+                android:text="@{data.artist}"
+                android:textColor="@color/light_grey"
+                android:textSize="15sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
+                <com.jesperqvarfordt.listn.common.view.elapsedtimestamp.ElapsedTimeStamp
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:textColor="@color/light_grey"
+                    android:textSize="15sp" />
+
+                <com.jesperqvarfordt.listn.common.view.remainingtimestamp.RemainingTimeStamp
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:textColor="@color/light_grey"
+                    android:textSize="15sp" />
+
+            </RelativeLayout>
+
+            <com.jesperqvarfordt.listn.common.view.playerseekbar.PlayerSeekBar
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:progressDrawable="@drawable/progress_bar"
+                android:thumb="@drawable/thumb" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <com.jesperqvarfordt.listn.common.view.shuffletogglebutton.ShuffleToggleButton
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginEnd="25dp"/>
+
+                <ImageView
+                    android:id="@+id/previous"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/btn_back" />
+
+                <ToggleButton
+                    android:id="@+id/playPause"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/play_pause_toggle"
+                    android:checked="@{data.playing}"
+                    android:textOff=""
+                    android:textOn="" />
+
+
+                <ImageView
+                    android:id="@+id/next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/btn_forward" />
+
+                <com.jesperqvarfordt.listn.common.view.repeattogglebutton.RepeatToggleButton
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginStart="25dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

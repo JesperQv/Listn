@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WaveView">
+        <attr name="waveNumberOfWaves" format="integer" />
+        <attr name="waveFrequency" format="float" />
+        <attr name="waveAmplitude" format="float" />
+        <attr name="wavePhaseShift" format="float" />
+        <attr name="waveDensity" format="float" />
+        <attr name="wavePrimaryLineWidth" format="float" />
+        <attr name="waveSecondaryLineWidth" format="float" />
+        <attr name="waveBackgroundColor" format="color" />
+        <attr name="waveColor" format="color" />
+        <attr name="waveXAxisPositionMultiplier" format="float" />
+    </declare-styleable>
+</resources>

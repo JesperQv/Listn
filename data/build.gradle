@@ -1,0 +1,66 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "BASE_URL", "\"https://api.soundcloud.com/\""
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "CLIENT_ID", getMyApiKey("clientId")
+            buildConfigField "String", "CLIENT_SECRET", getMyApiKey("clientSecret")
+        }
+
+        release {
+            buildConfigField "String", "CLIENT_ID", "\"" + System.getenv("CLIENT_ID") + "\""
+            buildConfigField "String", "CLIENT_SECRET", "\"" + System.getenv("CLIENT_SECRET") + "\""
+        }
+    }
+
+}
+
+dependencies {
+    implementation project(':domain')
+
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.8.1'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.13.0'
+}
+repositories {
+    mavenCentral()
+}
+
+static def getMyApiKey(String property) {
+    Properties properties = new Properties()
+    try {
+        properties.load(new FileInputStream("api-keys.properties"))
+        return "\"" + properties.getProperty(property) + "\""
+    } catch (Exception ignored) {
+        return "\"" + "noApiKey" + "\""
+    }
+}
+

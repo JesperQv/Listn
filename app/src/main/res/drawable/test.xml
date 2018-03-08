@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- other shapes are oval, line ,ring -->
+
+    <corners
+        android:radius="100dp"
+        android:bottomRightRadius="20dp" />
+    <!-- Use these attributes for the rest of the corners
+        android:topLeftRadius="integer"
+        android:topRightRadius="integer"
+        android:bottomLeftRadius="integer"  -->
+
+    <gradient
+        android:type="linear"
+        android:startColor="#0083ff"
+        android:centerColor="#00d4ff"
+        android:endColor="#00fff6"
+        android:angle="135"/>
+    <!-- Other types are radial and sweep -->
+
+    <!-- <solid
+         android:color="#00d4ff" /> -->
+    <!-- You should use a solid tag instead of
+    a gradient tag for a single solid color -->
+
+    <!-- <padding
+         android:left="integer"
+         android:top="integer"
+         android:right="integer"
+         android:bottom="integer" /> -->
+    <!-- If you want to specify padding -->
+
+    <size
+        android:width="100dp"
+        android:height="100dp" />
+    <!-- If you want to specify size -->
+
+    <stroke
+        android:width="2.3dp"
+        android:color="#FFFFFF" />
+    <!-- Creates an outline around te shape -->
+    <!-- To get the dashes effect use
+        android:dashGap="integer"
+        android:dashWidth="integer" -->
+
+    <!-- Skipped attributes can be found here:
+    https://developer.android.com/guide/topics/resources/drawable-resource.html#Shape -->
+
+</shape>
