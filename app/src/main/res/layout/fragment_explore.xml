@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context="com.jesperqvarfordt.listn.tracks.ExploreFragment">
+    tools:context="com.jesperqvarfordt.listn.explore.ExploreFragment">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

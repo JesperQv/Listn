@@ -20,6 +20,8 @@ constructor(private val subscribeToPlayer: SubscribeToPlayerInfoUseCase) :
                     info ->
                     val elapsedTime = info.elapsedTimeInMs
                     view.updateText(elapsedTime.toLong().msToTimeStamp())
+                }, {
+                    //No error implementation needed
                 }))
     }
 

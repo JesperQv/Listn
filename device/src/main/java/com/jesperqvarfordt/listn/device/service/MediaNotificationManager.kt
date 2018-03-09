@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
@@ -125,13 +124,13 @@ class MediaNotificationManager(private val context: Context,
         if (notificationManager.getNotificationChannel(channelId) == null) {
             val name = "Listn"
             val description = "Channel for playing music"
-            val importance = NotificationManager.IMPORTANCE_HIGH
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelId, name, importance)
             channel.description = description
-            channel.enableLights(true)
-            channel.lightColor = Color.BLACK
+            channel.setShowBadge(false)
+            // this is a workaround for a bug in oreo where notifications keep vibrating
+            channel.vibrationPattern = longArrayOf(0L)
             channel.enableVibration(true)
-            channel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
             notificationManager.createNotificationChannel(channel)
         }
     }

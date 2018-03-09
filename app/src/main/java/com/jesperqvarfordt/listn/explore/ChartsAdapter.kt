@@ -1,4 +1,4 @@
-package com.jesperqvarfordt.listn.tracks
+package com.jesperqvarfordt.listn.explore
 
 import android.net.Uri
 import android.support.v7.widget.RecyclerView

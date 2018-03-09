@@ -1,4 +1,4 @@
-package com.jesperqvarfordt.listn.tracks
+package com.jesperqvarfordt.listn.explore
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,7 +18,7 @@ import com.jesperqvarfordt.listn.domain.model.Chart
 import com.jesperqvarfordt.listn.domain.model.Track
 import com.jesperqvarfordt.listn.player.PlayerActivity
 import com.jesperqvarfordt.listn.player.di.DaggerTracksComponent
-import com.jesperqvarfordt.listn.tracks.di.TracksModule
+import com.jesperqvarfordt.listn.explore.di.TracksModule
 import kotlinx.android.synthetic.main.fragment_explore.*
 import kotlinx.android.synthetic.main.fragment_explore.view.*
 import javax.inject.Inject

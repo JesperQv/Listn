@@ -1,4 +1,4 @@
-package com.jesperqvarfordt.listn.tracks.di
+package com.jesperqvarfordt.listn.explore.di
 
 import com.jesperqvarfordt.listn.device.imagecache.ImageCache
 import com.jesperqvarfordt.listn.dagger.ViewScope
@@ -6,8 +6,8 @@ import com.jesperqvarfordt.listn.domain.usecase.GetChartsUseCase
 import com.jesperqvarfordt.listn.domain.usecase.GetTracksOnChartUseCase
 import com.jesperqvarfordt.listn.domain.usecase.SearchTracksUseCase
 import com.jesperqvarfordt.listn.domain.usecase.SetPlaylistAndPlayUseCase
-import com.jesperqvarfordt.listn.tracks.ExploreContract
-import com.jesperqvarfordt.listn.tracks.ExplorePresenter
+import com.jesperqvarfordt.listn.explore.ExploreContract
+import com.jesperqvarfordt.listn.explore.ExplorePresenter
 import dagger.Module
 import dagger.Provides
 

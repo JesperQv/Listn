@@ -21,6 +21,8 @@ constructor(private val seekTo: SeekToUseCase,
                     view.animateProgress(data.isPlaying,
                             data.elapsedTimeInMs,
                             data.durationInMs)
+                }, {
+                    // no error implementation needed
                 }))
     }
 

@@ -1,4 +1,4 @@
-package com.jesperqvarfordt.listn.tracks
+package com.jesperqvarfordt.listn.explore
 
 import com.jesperqvarfordt.listn.device.imagecache.ImageCache
 import com.jesperqvarfordt.listn.domain.model.Chart

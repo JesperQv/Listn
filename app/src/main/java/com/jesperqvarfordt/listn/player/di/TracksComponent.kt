@@ -2,8 +2,8 @@ package com.jesperqvarfordt.listn.player.di
 
 import com.jesperqvarfordt.listn.dagger.ViewScope
 import com.jesperqvarfordt.listn.dagger.component.AppComponent
-import com.jesperqvarfordt.listn.tracks.ExploreFragment
-import com.jesperqvarfordt.listn.tracks.di.TracksModule
+import com.jesperqvarfordt.listn.explore.ExploreFragment
+import com.jesperqvarfordt.listn.explore.di.TracksModule
 import dagger.Component
 
 @ViewScope

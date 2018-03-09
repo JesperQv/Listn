@@ -19,6 +19,8 @@ constructor(private val subscribeToPlayer: SubscribeToCombinedInfoUseCase) :
                 .subscribe({ info ->
                     val remainingTime = info.durationInMs - info.elapsedTimeInMs
                     view.updateText(remainingTime.toLong().msToTimeStamp())
+                }, {
+                    // no error implementation needed
                 }))
     }
 

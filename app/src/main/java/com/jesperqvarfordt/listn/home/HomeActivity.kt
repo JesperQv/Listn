@@ -6,7 +6,7 @@ import com.jesperqvarfordt.listn.App
 import com.jesperqvarfordt.listn.R
 import com.jesperqvarfordt.listn.home.di.DaggerHomeComponent
 import com.jesperqvarfordt.listn.home.di.HomeModule
-import com.jesperqvarfordt.listn.tracks.ExploreFragment
+import com.jesperqvarfordt.listn.explore.ExploreFragment
 import kotlinx.android.synthetic.main.activity_home.*
 import javax.inject.Inject
 

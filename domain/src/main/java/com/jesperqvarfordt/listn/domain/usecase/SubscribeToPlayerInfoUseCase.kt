@@ -6,11 +6,11 @@ import com.jesperqvarfordt.listn.domain.usecase.base.UseCase
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 
-class SubscribeToPlayerInfoUseCase(private val player: MusicPlayer,
+open class SubscribeToPlayerInfoUseCase(private val player: MusicPlayer,
                                    executionScheduler: Scheduler,
                                    uiScheduler: Scheduler) : UseCase(executionScheduler, uiScheduler) {
 
-    fun execute(): Observable<PlayerInfo> = player.playerInfoObservable
+    open fun execute(): Observable<PlayerInfo> = player.playerInfoObservable
             .subscribeOn(executionScheduler)
             .observeOn(uiScheduler)
 }

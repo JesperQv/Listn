@@ -5,11 +5,11 @@ import com.jesperqvarfordt.listn.domain.usecase.base.UseCase
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 
-class SeekToUseCase(private val player: MusicPlayer,
+open class SeekToUseCase(private val player: MusicPlayer,
                     executionScheduler: Scheduler,
                     uiScheduler: Scheduler) : UseCase(executionScheduler, uiScheduler) {
 
-    fun execute(pos: Long): Completable = player.seekTo(pos)
+    open fun execute(pos: Long): Completable = player.seekTo(pos)
             .subscribeOn(executionScheduler)
             .observeOn(uiScheduler)
 }

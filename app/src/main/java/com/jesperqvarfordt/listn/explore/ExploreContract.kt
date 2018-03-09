@@ -1,4 +1,4 @@
-package com.jesperqvarfordt.listn.tracks
+package com.jesperqvarfordt.listn.explore
 
 import com.jesperqvarfordt.listn.common.base.BasePresenter
 import com.jesperqvarfordt.listn.common.base.BaseView

@@ -18,6 +18,8 @@ constructor(private val subscribeToPlayer: SubscribeToCombinedInfoUseCase) : Pla
                     view.animateProgress(data.isPlaying,
                             data.elapsedTimeInMs,
                             data.durationInMs)
+                }, {
+                    // no error implementation needed
                 }))
     }
 
