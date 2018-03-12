@@ -19,6 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.jesperqvarfordt.listn.device.player.NotificationConfig
 
 # Lambda
 -dontwarn java.lang.invoke.*
@@ -32,14 +33,6 @@
 -allowaccessmodification
 -optimizationpasses 5
 
--dontpreverify
--keep class com.bookbeat.android.audio.model.consumption.** { *; }
--keep class com.bookbeat.android.api.model.** { *; }
--keep class com.bookbeat.android.api.hal.** { *; }
--keep class com.bookbeat.android.domain.** { *; }
--keep class com.bookbeat.android.history.** { *; }
--keep class com.bookbeat.android.history.** { *; }
--keep class  com.bookbeat.android.tracking.BookBeatTrackingDTO { *; }
 
 #-keep class io.reactivex.**
 
