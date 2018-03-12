@@ -76,6 +76,8 @@ jobs:
       - run:
           name: Release Build
           command: ./gradlew assembleRelease
+      - run:
+          name: Save Apk
           command: - cp -r Listn/app/build/outputs/apk/release $CIRCLE_ARTIFACTS
       - store_artifacts:
           path: app/build/reports
