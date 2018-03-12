@@ -19,7 +19,21 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class com.jesperqvarfordt.listn.device.player.NotificationConfig
+-keep class com.jesperqvarfordt.listn.data.** { *; }
+-keep class com.jesperqvarfordt.listn.device.** { *; }
+-keep class com.jesperqvarfordt.listn.app.** { *; }
+
+-keepclassmembers class com.jesperqvarfordt.listn.data.** { *; }
+-keepclassmembers class com.jesperqvarfordt.listn.device.** { *; }
+-keepclassmembers class com.jesperqvarfordt.listn.app.** { *; }
+
+-keep class com.jesperqvarfordt.listn.data.**
+-keep class com.jesperqvarfordt.listn.device.**
+-keep class com.jesperqvarfordt.listn.app.**
+
+-keepclassmembers class com.jesperqvarfordt.listn.data.**
+-keepclassmembers class com.jesperqvarfordt.listn.device.**
+-keepclassmembers class com.jesperqvarfordt.listn.app.**
 
 # Lambda
 -dontwarn java.lang.invoke.*
