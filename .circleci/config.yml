@@ -78,7 +78,7 @@ jobs:
           command: ./gradlew assembleRelease
       - run:
           name: Save Apk
-          command: cp -r Listn/app/build/outputs/apk/release app/build/apk
+          command: cp -r app/build/outputs/apk/release app/build/apk
       - store_artifacts:
           path: app/build/apk
           destination: apk
