@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.jesperqvarfordt.listn.App
 import com.jesperqvarfordt.listn.R
+import com.jesperqvarfordt.listn.explore.ExploreFragment
 import com.jesperqvarfordt.listn.home.di.DaggerHomeComponent
 import com.jesperqvarfordt.listn.home.di.HomeModule
-import com.jesperqvarfordt.listn.explore.ExploreFragment
 import kotlinx.android.synthetic.main.activity_home.*
 import javax.inject.Inject
 
@@ -37,7 +37,8 @@ class HomeActivity : AppCompatActivity(), HomeContract.View {
         if (exploreFragment.canBack()) {
             exploreFragment.backButtonPressed()
         } else {
-            super.onBackPressed()
+            //super.onBackPressed()
+            moveTaskToBack(true)
         }
     }
 
