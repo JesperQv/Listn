@@ -37,7 +37,6 @@ class HomeActivity : AppCompatActivity(), HomeContract.View {
         if (exploreFragment.canBack()) {
             exploreFragment.backButtonPressed()
         } else {
-            //super.onBackPressed()
             moveTaskToBack(true)
         }
     }

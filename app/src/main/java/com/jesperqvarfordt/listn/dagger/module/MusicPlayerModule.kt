@@ -1,10 +1,10 @@
 package com.jesperqvarfordt.listn.dagger.module
 
 import android.content.Context
+import com.jesperqvarfordt.listn.R
 import com.jesperqvarfordt.listn.device.imagecache.ImageCache
 import com.jesperqvarfordt.listn.device.player.NotificationConfig
 import com.jesperqvarfordt.listn.device.player.StreamingMusicPlayer
-import com.jesperqvarfordt.listn.R
 import com.jesperqvarfordt.listn.domain.player.MusicPlayer
 import com.jesperqvarfordt.listn.player.PlayerActivity
 import dagger.Module
@@ -21,7 +21,7 @@ class MusicPlayerModule {
                 R.drawable.ic_pause_white_24dp,
                 R.drawable.ic_skip_next_white_24dp,
                 R.drawable.ic_skip_previous_white_24dp,
-                R.drawable.ic_stat_image_audiotrack,
+                R.drawable.listn_small_icon,
                 R.color.colorPrimary,
                 PlayerActivity::class.java)
     }
