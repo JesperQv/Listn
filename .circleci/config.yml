@@ -53,7 +53,7 @@ jobs:
       - store_test_results:
           path: app/build/test-results
 
-  releasebuild:
+  release:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-25-alpha
@@ -85,13 +85,6 @@ jobs:
 workflows:
   version: 2
   build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-
-  release_build:
     jobs:
       - build
       - test:
