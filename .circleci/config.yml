@@ -1,7 +1,4 @@
 version: 2
-machine:
-  environment:
-    KEYSTORE: ${HOME}/${CIRCLE_PROJECT_REPONAME}/signing.keystore
 jobs:
   build:
     working_directory: ~/code
@@ -58,10 +55,16 @@ jobs:
 
   release:
     working_directory: ~/code
+    machine:
+      environment:
+        KEYSTORE: ${HOME}/${CIRCLE_PROJECT_REPONAME}/signing.keystore
     docker:
       - image: circleci/android:api-25-alpha
     environment:
       JVM_OPTS: -Xmx3200m
+    dependencies:
+      pre:
+        - bash ./misc/download_keystore.sh
     steps:
       - checkout
       - run:
