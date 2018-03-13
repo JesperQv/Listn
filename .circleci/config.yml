@@ -60,11 +60,14 @@ jobs:
     environment:
       JVM_OPTS: -Xmx3200m
       KEYSTORE: ${HOME}/${CIRCLE_PROJECT_REPONAME}/signing.keystore
-    dependencies:
-      pre:
-        - bash ./misc/download_keystore.sh
     steps:
       - checkout
+      - run:
+          name: export KEYSTORE path
+          command: echo 'export KEYSTORE=$(pwd)/signing.jks' >> $BASH_ENV
+      - run:
+          name: download keystore signing
+          command: bash ./misc/download_keystore.sh
       - run:
           name: chmod permissions
           command: chmod +x ./gradlew
