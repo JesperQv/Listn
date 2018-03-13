@@ -70,7 +70,7 @@ jobs:
           command: touch api-keys.properties
       - run:
           name: populate api keys file
-          command: echo 'clientId = ${CLIENT_ID}" > api-keys.properties
+          command: echo 'clientId = ${CLIENT_ID}' > api-keys.properties
       - run:
           name: chmod permissions
           command: chmod +x ./gradlew
