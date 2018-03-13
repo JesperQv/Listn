@@ -97,7 +97,18 @@ constructor(private val context: Context,
             mediaController.transportControls.stop()
             mediaBrowserSubscriptionCallback.onChildrenLoaded(mediaBrowser!!.root, playerResources())
         }
+        loadAlbumArtAsync(newPlaylist)
+
         return Completable.complete()
+    }
+
+    private fun loadAlbumArtAsync(newPlaylist: List<Track>) {
+        imageCache.loadAllImagesAndThenComplete(newPlaylist).subscribe({
+            playlist = newPlaylist.toMediaMetadata(imageCache)
+            if (mediaBrowser != null && mediaBrowser!!.isConnected) {
+                mediaController.transportControls.prepare()
+            }
+        })
     }
 
     private fun connectMediaBrowser() {

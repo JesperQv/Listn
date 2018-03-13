@@ -47,7 +47,7 @@ class ExoPlayerAdapter(val context: Context,
     init {
         //TODO fix name here
         dataSourceFactory = DefaultDataSourceFactory(context,
-                Util.getUserAgent(context, "StreamingMusicPlayer"), defaultBandwidthMeter)
+                Util.getUserAgent(context, "Listn"), defaultBandwidthMeter)
         exoPlayer.addListener(ExoPlayerListener())
     }
 

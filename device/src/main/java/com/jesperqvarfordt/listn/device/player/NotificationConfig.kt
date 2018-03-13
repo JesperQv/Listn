@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-// TODO add default icons
 @SuppressLint("ParcelCreator")
 @Parcelize
 data class NotificationConfig(val playDrawable: Int = -1,
