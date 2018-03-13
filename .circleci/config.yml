@@ -67,7 +67,7 @@ jobs:
           command: bash ./misc/download_keystore.sh
       - run:
           name: create api keys file
-        command: touch api-keys.properties
+          command: touch api-keys.properties
       - run:
           name: populate api keys file
           command: echo 'clientId = ${CLIENT_ID}" > api-keys.properties
