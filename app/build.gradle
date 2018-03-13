@@ -10,7 +10,6 @@ android {
         applicationId "com.jesperqvarfordt.listn"
         minSdkVersion 21
         targetSdkVersion 27
-        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -29,8 +28,8 @@ android {
         release {
             signingConfig signingConfigs.release
             debuggable false
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
