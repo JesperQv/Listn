@@ -1,4 +1,7 @@
 version: 2
+machine:
+  environment:
+    KEYSTORE: ${HOME}/${CIRCLE_PROJECT_REPONAME}/signing.keystore
 jobs:
   build:
     working_directory: ~/code
