@@ -20,7 +20,9 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class com.jesperqvarfordt.listn.domain.** { *; }
--keep class com.jesperqvarfordt.listn.domain.model.** { *; }
+-keep class com.jesperqvarfordt.listn.data.** { *; }
+-keep class com.jesperqvarfordt.listn.device.** { *; }
+-keep class com.jesperqvarfordt.listn.app.** { *; }
 
 -keep class kotlin.internal.annotations.AvoidUninitializedObjectCopyingCheck
 -keep class kotlin.internal.annotations.AvoidUninitializedObjectCopyingCheck
