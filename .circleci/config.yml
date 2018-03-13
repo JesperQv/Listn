@@ -66,11 +66,11 @@ jobs:
           name: download keystore signing
           command: bash ./misc/download_keystore.sh
       - run:
-          name: test print 1
-          command: echo ${CLIENT_ID}
+          name: create api keys file
+	  command: touch api-keys.properties
       - run:
-          name: test print 2
-          command: echo ${CLIENT_SECRET}
+          name: populate api keys file
+          command: echo 'clientId = ${CLIENT_ID}" > api-keys.properties
       - run:
           name: chmod permissions
           command: chmod +x ./gradlew
