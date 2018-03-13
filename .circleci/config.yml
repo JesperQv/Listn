@@ -66,8 +66,17 @@ jobs:
           name: download keystore signing
           command: bash ./misc/download_keystore.sh
       - run:
-          name: test print
+          name: test print 1
           command: echo ${KEYSTORE_PASSWORD}
+      - run:
+          name: test print 2
+          command: echo ${KEY_ALIAS}
+      - run:
+          name: test print 3
+          command: echo ${KEY_PASSWORD}
+      - run:
+          name: test print 4
+          command: echo ${KEYSTORE}
       - run:
           name: chmod permissions
           command: chmod +x ./gradlew
