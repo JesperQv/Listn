@@ -130,6 +130,7 @@ class MediaNotificationManager(private val context: Context,
             channel.setShowBadge(false)
             // this is a workaround for a bug in oreo where notifications keep vibrating
             channel.vibrationPattern = longArrayOf(0L)
+            channel.setSound(null, null)
             channel.enableVibration(true)
             notificationManager.createNotificationChannel(channel)
         }
