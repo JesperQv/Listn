@@ -63,7 +63,7 @@ jobs:
       - checkout
       - run:
           name: export KEYSTORE path
-          command: echo 'export KEYSTORE=${HOME}/repo/sigining.keystore' >> $BASH_ENV
+          command: echo 'export KEYSTORE=${HOME}/repo/androidkeystore.jks' >> $BASH_ENV
       - run:
           name: download keystore signing
           command: bash ./misc/download_keystore.sh
