@@ -1,12 +1,16 @@
 package com.jesperqvarfordt.listn.explore
 
+import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jesperqvarfordt.listn.R
+import com.jesperqvarfordt.listn.common.extensions.px
+import com.jesperqvarfordt.listn.common.extensions.screenWidth
 import com.jesperqvarfordt.listn.domain.model.Chart
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.item_chart.view.*
 
 class ChartsAdapter
@@ -37,7 +41,15 @@ constructor(private val chartClicked: (chart: Chart) -> Unit) :
 
         fun onBind(chart: Chart) {
             itemView.name.text = chart.name
-            Picasso.with(itemView.context).load(chart.imageUrl).into(itemView.chartImage)
+            val width = (itemView.context as Activity).screenWidth()/2
+            val height = 200.px
+            val transformation = RoundedCornersTransformation(24, 12)
+            Picasso.with(itemView.context)
+                    .load(chart.imageUrl)
+                    .resize(width, height)
+                    .centerCrop()
+                    .transform(transformation)
+                    .into(itemView.chartImage)
             itemView.setOnClickListener { chartClicked.invoke(chart) }
         }
 

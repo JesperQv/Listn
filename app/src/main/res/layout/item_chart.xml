@@ -8,14 +8,7 @@
     <ImageView
         android:id="@+id/chartImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:scaleType="centerCrop" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/chart_item_shape" />
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/name"
