@@ -25,6 +25,7 @@ android {
             buildConfigField "String", "CLIENT_ID", "\"" + System.getenv("CLIENT_ID") + "\""
             buildConfigField "String", "CLIENT_SECRET", "\"" + System.getenv("CLIENT_SECRET") + "\""
             debuggable false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

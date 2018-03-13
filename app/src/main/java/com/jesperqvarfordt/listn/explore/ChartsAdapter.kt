@@ -1,12 +1,12 @@
 package com.jesperqvarfordt.listn.explore
 
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jesperqvarfordt.listn.R
 import com.jesperqvarfordt.listn.domain.model.Chart
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_chart.view.*
 
 class ChartsAdapter
@@ -37,7 +37,7 @@ constructor(private val chartClicked: (chart: Chart) -> Unit) :
 
         fun onBind(chart: Chart) {
             itemView.name.text = chart.name
-            itemView.chartImage.setImageURI(Uri.parse(chart.imageUri))
+            Picasso.with(itemView.context).load(chart.imageUrl).into(itemView.chartImage)
             itemView.setOnClickListener { chartClicked.invoke(chart) }
         }
 
