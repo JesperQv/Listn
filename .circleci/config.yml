@@ -1,7 +1,4 @@
 version: 2
-machine:
-  environment:
-    
 jobs:
   build:
     working_directory: ~/code
@@ -62,13 +59,11 @@ jobs:
       - image: circleci/android:api-25-alpha
     environment:
       JVM_OPTS: -Xmx3200m
-      KEYSTORE: ${HOME}/${CIRCLE_PROJECT_REPONAME}/signing.keystore
     steps:
       - checkout
-      #- run:
-      #    name: export KEYSTORE path
-      #    command: echo 'export KEYSTORE=$(pwd)/signing.jks' >> $BASH_ENV
-      - run: echo 'export KEYSTORE=${HOME}/${CIRCLE_PROJECT_REPONAME}/sigining.keystore' >> $BASH_ENV
+      - run:
+          name: export KEYSTORE path
+          command: echo 'export KEYSTORE=${HOME}/repo/sigining.keystore' >> $BASH_ENV
       - run:
           name: download keystore signing
           command: bash ./misc/download_keystore.sh
