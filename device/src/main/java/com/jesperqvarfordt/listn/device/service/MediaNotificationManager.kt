@@ -29,9 +29,9 @@ class MediaNotificationManager(private val context: Context,
     private val prevAction: NotificationCompat.Action
 
     companion object {
-        val notificationId = 11533
-        val channelId = "com.jesperqvarfordt.listn.channel"
-        val requestCode = 678
+        const val notificationId = 11533
+        const val channelId = "com.jesperqvarfordt.listn.channel"
+        const val requestCode = 678
     }
 
     init {

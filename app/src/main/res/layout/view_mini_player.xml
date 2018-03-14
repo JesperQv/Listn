@@ -13,11 +13,11 @@
 
     <ToggleButton
         android:id="@+id/playPause"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/play_pause_toggle"
+        android:layout_marginStart="15dp"
+        android:background="@drawable/play_pause_toggle_small"
         android:textOff=""
         android:textOn="" />
 
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="15dp"
         android:layout_toEndOf="@+id/playPause"
         android:layout_toStartOf="@+id/time"
         android:ellipsize="end"
