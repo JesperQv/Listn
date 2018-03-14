@@ -100,4 +100,60 @@
         android:background="@drawable/player_bg_gradient"
         android:visibility="gone" />
 
+    <RelativeLayout
+        android:id="@+id/errorView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appbar"
+        android:background="@drawable/player_bg_gradient"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/noConnectionImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:tint="@color/light_grey"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_no_internet"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/noConnectionImage"
+            android:fontFamily="@font/raleway_bold"
+            android:layout_centerHorizontal="true"
+            android:text="@string/no_connection"
+            android:textColor="@color/light_grey"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/emptyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appbar"
+        android:background="@drawable/player_bg_gradient"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/noResultImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:tint="@color/light_grey"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_sad_robot"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/noResultImage"
+            android:fontFamily="@font/raleway_bold"
+            android:layout_centerHorizontal="true"
+            android:text="@string/empty_search"
+            android:textColor="@color/light_grey"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

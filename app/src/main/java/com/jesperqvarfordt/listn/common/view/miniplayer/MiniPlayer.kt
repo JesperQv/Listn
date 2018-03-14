@@ -31,13 +31,19 @@ class MiniPlayer
                 .build()
                 .inject(this)
 
-        playPause.setOnClickListener({
+        play_pause.setOnClickListener({
             presenter.playPausedClicked()
         })
 
-        setOnClickListener({
+        // increasing the click area of play/pause button
+        toggle_container.setOnClickListener({
+            play_pause.performClick()
+        })
+
+        mini_player_click_area.setOnClickListener({
             presenter.miniPlayerClicked()
         })
+
     }
 
     override fun openMusicPlayer() {
@@ -56,7 +62,7 @@ class MiniPlayer
 
     override fun updateUi(info: CombinedInfo) {
         setVisible(true)
-        playPause.isChecked = info.isPlaying
+        play_pause.isChecked = info.isPlaying
         title.text = info.title
     }
 }

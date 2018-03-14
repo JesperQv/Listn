@@ -70,6 +70,8 @@ constructor(private val search: SearchTracksUseCase,
                 .subscribe({
                     tracks -> view?.updateTracks(tracks)
                     imageCache.preloadImages(tracks)
+                }, {
+                    view?.showError()
                 }))
     }
 

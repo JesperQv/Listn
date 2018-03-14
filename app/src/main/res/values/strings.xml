@@ -5,4 +5,6 @@
     <string name="label_next">Next track</string>
     <string name="label_previous">Previous Track</string>
     <string name="search_for_songs">Search for songs</string>
+    <string name="no_connection">There was a problem with the connection</string>
+    <string name="empty_search">We couldn\'t find what you were looking for</string>
 </resources>

@@ -16,9 +16,9 @@ import com.jesperqvarfordt.listn.common.extensions.hideKeyboard
 import com.jesperqvarfordt.listn.common.extensions.setVisible
 import com.jesperqvarfordt.listn.domain.model.Chart
 import com.jesperqvarfordt.listn.domain.model.Track
+import com.jesperqvarfordt.listn.explore.di.TracksModule
 import com.jesperqvarfordt.listn.player.PlayerActivity
 import com.jesperqvarfordt.listn.player.di.DaggerTracksComponent
-import com.jesperqvarfordt.listn.explore.di.TracksModule
 import kotlinx.android.synthetic.main.fragment_explore.*
 import kotlinx.android.synthetic.main.fragment_explore.view.*
 import javax.inject.Inject
@@ -83,11 +83,13 @@ class ExploreFragment : Fragment(),
     }
 
     override fun showEmpty() {
-        // TODO
+        errorView.setVisible(false)
+        emptyView.setVisible(true)
     }
 
     override fun showError() {
-        // TODO
+        emptyView.setVisible(false)
+        errorView.setVisible(true)
     }
 
     override fun openMusicPlayer() {
@@ -110,12 +112,16 @@ class ExploreFragment : Fragment(),
     }
 
     override fun toggleTrackList() {
+        errorView.setVisible(false)
+        emptyView.setVisible(false)
         backButton.setVisible(true)
         trackList.setVisible(true)
         chartList.setVisible(false)
     }
 
     override fun toggleChartList() {
+        errorView.setVisible(false)
+        emptyView.setVisible(false)
         backButton.setVisible(false)
         chartList.setVisible(true)
         tracksAdapter.updateTracks(emptyList())

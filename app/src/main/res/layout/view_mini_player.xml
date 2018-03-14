@@ -11,37 +11,53 @@
         android:layout_height="8dp"
         android:progressDrawable="@drawable/progress_bar" />
 
-    <ToggleButton
-        android:id="@+id/playPause"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="15dp"
-        android:background="@drawable/play_pause_toggle_small"
-        android:textOff=""
-        android:textOn="" />
+    <RelativeLayout
+        android:id="@+id/toggle_container"
+        android:layout_width="42dp"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="15dp"
-        android:layout_toEndOf="@+id/playPause"
-        android:layout_toStartOf="@+id/time"
-        android:ellipsize="end"
-        android:fontFamily="@font/montserrat_light"
-        android:lines="1"
-        android:textColor="@color/white" />
+        <ToggleButton
+            android:id="@+id/play_pause"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/play_pause_toggle_small"
+            android:padding="20dp"
+            android:textOff=""
+            android:textOn="" />
 
-    <com.jesperqvarfordt.listn.common.view.remainingtimestamp.RemainingTimeStamp
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        android:textColor="@color/light_grey" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/mini_player_click_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@+id/toggle_container">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@+id/time"
+            android:ellipsize="end"
+            android:fontFamily="@font/montserrat_light"
+            android:lines="1"
+            android:textColor="@color/white" />
+
+        <com.jesperqvarfordt.listn.common.view.remainingtimestamp.RemainingTimeStamp
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/light_grey" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
