@@ -5,8 +5,6 @@ import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 
-
-
 object ImageBindingAdapter {
     @JvmStatic
     @BindingAdapter("imageUrl")

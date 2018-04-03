@@ -14,7 +14,7 @@
     <color name="progress_grey">#363b46</color>
     <color name="progress_blue">#2256ca</color>
     <color name="progress_pink">#fa35a4</color>
-    <color name="progress_shadow">#cc8d00ff</color>
+    <color name="progress_shadow">#8d00ff</color>
 
     <color name="dark_grey_1">#21252f</color>
     <color name="light_grey">#a0a6b6</color>
