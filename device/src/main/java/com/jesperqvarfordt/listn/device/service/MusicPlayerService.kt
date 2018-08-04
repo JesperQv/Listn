@@ -66,7 +66,8 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
     }
 
     inner class MediaSessionCallback : MediaSessionCompat.Callback() {
-        private val playlist = ArrayList<MediaSessionCompat.QueueItem>()
+        private var playlist = ArrayList<MediaSessionCompat.QueueItem>()
+        private var sortedPlaylist = ArrayList<MediaSessionCompat.QueueItem>()
         private var queueIndex = -1
         var preparedMedia: MediaMetadataCompat? = null
         private var shouldContinue = false
@@ -136,8 +137,19 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         }
 
         override fun onSkipToNext() {
-            queueIndex = ++queueIndex % playlist.size
             preparedMedia = null
+
+            if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_ALL) {
+                queueIndex = ++queueIndex % playlist.size
+            } else if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_NONE) {
+                queueIndex = ++queueIndex % playlist.size
+                if (queueIndex == 0) {
+                    onPause()
+                    return
+                }
+            }
+            // REPEAT_MODE_ONE: nothing happens, don't change the queueIndex
+
             if (player.isPlaying) {
                 onPlay()
             } else {
@@ -146,8 +158,14 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         }
 
         override fun onSkipToPrevious() {
-            queueIndex = if (queueIndex > 0) queueIndex - 1 else playlist.size - 1
             preparedMedia = null
+            if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_ALL) {
+                queueIndex = if (queueIndex > 0) queueIndex - 1 else playlist.size - 1
+            } else if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_NONE) {
+                queueIndex = if (queueIndex > 0) queueIndex - 1 else 0
+            }
+            // REPEAT_MODE_ONE: nothing happens, don't change the queueIndex
+
             if (player.isPlaying) {
                 onPlay()
             } else {
@@ -158,6 +176,22 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         override fun onSeekTo(pos: Long) {
             player.seekTo(pos)
         }
+
+        override fun onSetShuffleMode(shuffleMode: Int) {
+            super.onSetShuffleMode(shuffleMode)
+            if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+                sortedPlaylist = playlist
+                val thisSong = playlist[queueIndex]
+                playlist.remove(thisSong)
+                playlist.shuffle()
+                playlist.add(queueIndex, thisSong)
+            } else if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
+                val thisSongIndex = sortedPlaylist.indexOf(playlist[queueIndex])
+                playlist = sortedPlaylist
+                queueIndex = thisSongIndex
+            }
+        }
+
     }
 
     private fun getState(exoPlayerState: Int): Int {
