@@ -7,7 +7,8 @@ open class TrackMapper(private val clientId: String) {
 
     fun map(from: SCTrack): Track {
         val largeImageUrl = from.coverUrl?.replace("large", "t500x500")
-        return Track(from.title,
+        return Track(from.id,
+                from.title,
                 from.artist?.name,
                 from.coverUrl,
                 largeImageUrl,

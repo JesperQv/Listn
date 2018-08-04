@@ -13,6 +13,7 @@ interface ExploreContract {
         fun toggleTrackList()
         fun toggleChartList()
         fun updateTracks(tracks: List<Track>)
+        fun updatePlayingTrack(id: Int)
         fun updateCharts(charts: List<Chart>)
         fun showEmpty()
         fun showError()

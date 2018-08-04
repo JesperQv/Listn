@@ -75,6 +75,30 @@ class UseCaseModule {
 
     @Provides
     @Singleton
+    fun getShuffleUseCase(player: MusicPlayer): ShuffleUseCase {
+        return ShuffleUseCase(player, Schedulers.io(), AndroidSchedulers.mainThread())
+    }
+
+    @Provides
+    @Singleton
+    fun getRepeatNoneUseCase(player: MusicPlayer): RepeatNoneUseCase {
+        return RepeatNoneUseCase(player, Schedulers.io(), AndroidSchedulers.mainThread())
+    }
+
+    @Provides
+    @Singleton
+    fun getRepeatAllUseCase(player: MusicPlayer): RepeatAllUseCase {
+        return RepeatAllUseCase(player, Schedulers.io(), AndroidSchedulers.mainThread())
+    }
+
+    @Provides
+    @Singleton
+    fun getRepeatOneUseCase(player: MusicPlayer): RepeatOneUseCase {
+        return RepeatOneUseCase(player, Schedulers.io(), AndroidSchedulers.mainThread())
+    }
+
+    @Provides
+    @Singleton
     fun tearDownPlayerUseCase(player: MusicPlayer): TearDownPlayerUseCase {
         return TearDownPlayerUseCase(player)
     }

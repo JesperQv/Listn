@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.jesperqvarfordt.listn.R
 import com.jesperqvarfordt.listn.common.extensions.msToTimeStamp
+import com.jesperqvarfordt.listn.common.extensions.setVisible
 import com.jesperqvarfordt.listn.common.extensions.shuffleTo
 import com.jesperqvarfordt.listn.domain.model.Track
 import com.squareup.picasso.Picasso
@@ -17,9 +18,15 @@ constructor(private val trackClicked: (tracks: List<Track>) -> Unit) :
         RecyclerView.Adapter<TracksAdapter.TrackViewHolder>() {
 
     private var tracks: MutableList<Track> = mutableListOf()
+    private var playingId = -1
 
     fun updateTracks(newTracks: List<Track>) {
         tracks = newTracks.toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun updatePlayingTrackId(id: Int) {
+        playingId = id
         notifyDataSetChanged()
     }
 
@@ -28,7 +35,7 @@ constructor(private val trackClicked: (tracks: List<Track>) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder?, position: Int) {
-        holder?.onBind(tracks[position], position)
+        holder?.onBind(tracks[position], position, playingId)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TrackViewHolder {
@@ -38,8 +45,17 @@ constructor(private val trackClicked: (tracks: List<Track>) -> Unit) :
 
     inner class TrackViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
-        fun onBind(track: Track, pos: Int) {
-            itemView.trackTitle.text = track.title
+        fun onBind(track: Track, pos: Int, playingId: Int) {
+            if (track.id == playingId) {
+                itemView.trackTitlePlaying.text = track.title
+                itemView.trackTitlePlaying.setVisible(true)
+                itemView.trackTitle.setVisible(false)
+            } else {
+                itemView.trackTitle.text = track.title
+                itemView.trackTitlePlaying.setVisible(false)
+                itemView.trackTitle.setVisible(true)
+            }
+
             itemView.trackDuration.text = track.durationInMs.msToTimeStamp()
             itemView.setOnClickListener({
                 val temp = tracks.toMutableList()

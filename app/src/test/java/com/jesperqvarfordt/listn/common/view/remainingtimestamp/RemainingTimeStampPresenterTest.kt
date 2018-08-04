@@ -61,7 +61,7 @@ class RemainingTimeStampPresenterTest {
 
     private fun getTestData(): Observable<CombinedInfo> {
         val playerInfo = PlayerInfo(true, testTime)
-        val mediaInfo = MediaInfo("a", "a", "a", testTime*2)
+        val mediaInfo = MediaInfo(1, "a", "a", "a", testTime*2)
         return Observable.fromIterable(mutableListOf(CombinedInfo(playerInfo, mediaInfo)))
     }
 }

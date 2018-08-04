@@ -1,6 +1,7 @@
 package com.jesperqvarfordt.listn.domain.model
 
-data class Track(val title: String?,
+data class Track(val id: Int,
+                 val title: String?,
                  val artist: String?,
                  val thumbnailUrl: String?,
                  val largeImageUrl: String?,

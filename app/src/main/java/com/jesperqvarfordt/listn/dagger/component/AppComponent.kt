@@ -1,7 +1,7 @@
 package com.jesperqvarfordt.listn.dagger.component
 
-import com.jesperqvarfordt.listn.device.imagecache.ImageCache
 import com.jesperqvarfordt.listn.dagger.module.*
+import com.jesperqvarfordt.listn.device.imagecache.ImageCache
 import com.jesperqvarfordt.listn.domain.player.MusicPlayer
 import com.jesperqvarfordt.listn.domain.usecase.*
 import dagger.Component
@@ -27,6 +27,10 @@ interface AppComponent {
     fun subscribeToPlayerInfoUseCase(): SubscribeToPlayerInfoUseCase
     fun subscribeToMediaInfoUseCase(): SubscribeToMediaInfoUseCase
     fun subscribeToCombinedInfoUseCase(): SubscribeToCombinedInfoUseCase
+    fun shuffleUseCase(): ShuffleUseCase
+    fun repeatNoneUseCase(): RepeatNoneUseCase
+    fun repeatAllUseCase(): RepeatAllUseCase
+    fun repeatOneUseCase(): RepeatOneUseCase
     fun tearDownPlayerUseCase(): TearDownPlayerUseCase
     fun getTracksOnChartUseCase(): GetTracksOnChartUseCase
     fun getChartsUseCase(): GetChartsUseCase

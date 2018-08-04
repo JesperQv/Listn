@@ -7,7 +7,7 @@ import com.jesperqvarfordt.listn.domain.model.Track
 fun List<Track>.toMediaMetadata(imageCache: ImageCache): List<MediaMetadataCompat> {
     return map {
         MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, it.title)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, it.id.toString())
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, it.title)
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, it.streamUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, it.artist)

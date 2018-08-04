@@ -82,6 +82,10 @@ class ExploreFragment : Fragment(),
         tracksAdapter.updateTracks(tracks)
     }
 
+    override fun updatePlayingTrack(id: Int) {
+        tracksAdapter.updatePlayingTrackId(id)
+    }
+
     override fun showEmpty() {
         errorView.setVisible(false)
         emptyView.setVisible(true)

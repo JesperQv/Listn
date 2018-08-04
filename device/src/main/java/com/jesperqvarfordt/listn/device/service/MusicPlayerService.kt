@@ -178,20 +178,25 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         }
 
         override fun onSetShuffleMode(shuffleMode: Int) {
-            super.onSetShuffleMode(shuffleMode)
+            mediaSession.setShuffleMode(shuffleMode)
             if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
-                sortedPlaylist = playlist
+                sortedPlaylist.clear()
+                sortedPlaylist.addAll(playlist)
                 val thisSong = playlist[queueIndex]
                 playlist.remove(thisSong)
                 playlist.shuffle()
                 playlist.add(queueIndex, thisSong)
             } else if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
                 val thisSongIndex = sortedPlaylist.indexOf(playlist[queueIndex])
-                playlist = sortedPlaylist
+                playlist.clear()
+                playlist.addAll(sortedPlaylist)
                 queueIndex = thisSongIndex
             }
         }
 
+        override fun onSetRepeatMode(repeatMode: Int) {
+            mediaSession.setRepeatMode(repeatMode)
+        }
     }
 
     private fun getState(exoPlayerState: Int): Int {

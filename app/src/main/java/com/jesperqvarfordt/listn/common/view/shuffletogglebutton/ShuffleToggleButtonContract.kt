@@ -10,6 +10,6 @@ interface ShuffleToggleButtonContract {
     }
 
     interface Presenter : BasePresenter<View> {
-        fun shuffle(shuffle: Boolean)
+        fun shuffleClicked()
     }
 }

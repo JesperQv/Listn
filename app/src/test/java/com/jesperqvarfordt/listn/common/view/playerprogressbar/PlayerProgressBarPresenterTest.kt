@@ -22,7 +22,7 @@ class PlayerProgressBarPresenterTest {
     private lateinit var view: PlayerProgressBarContract.View
 
     private val testPlayerInfo = PlayerInfo(true, 1)
-    private val testMediaInfo = MediaInfo("title", "artist", "url", 10)
+    private val testMediaInfo = MediaInfo(1, "title", "artist", "url", 10)
     private val testCombinedInfo = CombinedInfo(testPlayerInfo, testMediaInfo)
 
     @Before

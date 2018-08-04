@@ -3,10 +3,7 @@ package com.jesperqvarfordt.listn.explore
 import com.jesperqvarfordt.listn.device.imagecache.ImageCache
 import com.jesperqvarfordt.listn.domain.model.Chart
 import com.jesperqvarfordt.listn.domain.model.Track
-import com.jesperqvarfordt.listn.domain.usecase.GetChartsUseCase
-import com.jesperqvarfordt.listn.domain.usecase.GetTracksOnChartUseCase
-import com.jesperqvarfordt.listn.domain.usecase.SearchTracksUseCase
-import com.jesperqvarfordt.listn.domain.usecase.SetPlaylistAndPlayUseCase
+import com.jesperqvarfordt.listn.domain.usecase.*
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -16,6 +13,7 @@ constructor(private val search: SearchTracksUseCase,
             private val startPlayingPlaylist: SetPlaylistAndPlayUseCase,
             private val getCharts: GetChartsUseCase,
             private val getTracksOnChart: GetTracksOnChartUseCase,
+            private val listenToMediaInfo: SubscribeToMediaInfoUseCase,
             private val imageCache: ImageCache) : ExploreContract.Presenter {
 
     private var view: ExploreContract.View? = null
@@ -24,6 +22,7 @@ constructor(private val search: SearchTracksUseCase,
     override fun subscribe(view: ExploreContract.View) {
         this.view = view
         loadChartsAndShow()
+        listenToMediaInfo()
     }
 
     private fun loadChartsAndShow(){
@@ -34,6 +33,15 @@ constructor(private val search: SearchTracksUseCase,
                     view?.updateCharts(charts)
                 }, {
                     view?.showError()
+                }))
+    }
+
+    private fun listenToMediaInfo() {
+        disposables.add(listenToMediaInfo.execute()
+                .subscribe({
+                    view?.updatePlayingTrack(it.id)
+                }, {
+                    // Nothing
                 }))
     }
 

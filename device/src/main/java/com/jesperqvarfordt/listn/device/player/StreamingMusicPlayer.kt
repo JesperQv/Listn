@@ -193,18 +193,21 @@ constructor(private val context: Context,
             super.onPlaybackStateChanged(state)
             isPlaying = state != null && state.state == PlaybackStateCompat.STATE_PLAYING
             val progress = state?.position?.toInt() ?: 0
+            val shuffle = getShuffleMode(mediaController.shuffleMode)
+            val repeat = getRepeatMode(mediaController.shuffleMode)
             playerInfoObservable as BehaviorSubject<PlayerInfo>
-            playerInfoObservable.onNext(PlayerInfo(isPlaying, progress))
+            playerInfoObservable.onNext(PlayerInfo(isPlaying, progress, shuffle, repeat))
         }
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             super.onMetadataChanged(metadata)
+            val id = metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)?.toInt() ?: 0
             val title = metadata?.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
             val artist = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
             val coverUrl = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI)
             val durationInMs = metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION) ?: 0
             mediaInfoObservable as BehaviorSubject<MediaInfo>
-            mediaInfoObservable.onNext(MediaInfo(title, artist, coverUrl, durationInMs.toInt()))
+            mediaInfoObservable.onNext(MediaInfo(id, title, artist, coverUrl, durationInMs.toInt()))
         }
 
         override fun onShuffleModeChanged(shuffleMode: Int) {
