@@ -24,7 +24,7 @@ class ShuffleToggleButton
                 .build()
                 .inject(this)
         setImageDrawable(context.getDrawable(R.drawable.ic_baseline_shuffle_24dp))
-        setColorFilter(context.resources.getColor(R.color.light_grey), PorterDuff.Mode.SRC_IN)
+        setColorFilter(context.resources.getColor(R.color.progress_grey), PorterDuff.Mode.SRC_IN)
         setOnClickListener { presenter.shuffleClicked() }
     }
 
@@ -42,7 +42,7 @@ class ShuffleToggleButton
         if (shuffling) {
             setColorFilter(context.resources.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
         } else {
-            setColorFilter(context.resources.getColor(R.color.light_grey), PorterDuff.Mode.SRC_IN)
+            setColorFilter(context.resources.getColor(R.color.progress_grey), PorterDuff.Mode.SRC_IN)
         }
     }
 }

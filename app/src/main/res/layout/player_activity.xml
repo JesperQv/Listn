@@ -137,7 +137,7 @@
                 <com.jesperqvarfordt.listn.common.view.shuffletogglebutton.ShuffleToggleButton
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:layout_marginEnd="15dp"/>
+                    android:layout_marginEnd="25dp"/>
 
                 <ImageView
                     android:id="@+id/previous"
@@ -162,6 +162,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/btn_forward" />
+
+                <com.jesperqvarfordt.listn.common.view.repeattogglebutton.RepeatToggleButton
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginStart="25dp"/>
 
             </LinearLayout>
 

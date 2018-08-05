@@ -176,6 +176,10 @@ constructor(private val context: Context,
                 mediaController.addQueueItem(mediaItem.description)
             }
 
+            if (mediaController.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+                mediaController.transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
+            }
+
             mediaController.transportControls.prepare()
 
             if (playWhenReady) {
@@ -194,7 +198,7 @@ constructor(private val context: Context,
             isPlaying = state != null && state.state == PlaybackStateCompat.STATE_PLAYING
             val progress = state?.position?.toInt() ?: 0
             val shuffle = getShuffleMode(mediaController.shuffleMode)
-            val repeat = getRepeatMode(mediaController.shuffleMode)
+            val repeat = getRepeatMode(mediaController.repeatMode)
             playerInfoObservable as BehaviorSubject<PlayerInfo>
             playerInfoObservable.onNext(PlayerInfo(isPlaying, progress, shuffle, repeat))
         }
@@ -238,6 +242,7 @@ constructor(private val context: Context,
         private fun getRepeatMode(repeatMode: Int): RepeatMode {
             return when (repeatMode) {
                 PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.REPEAT_ONE
+                PlaybackStateCompat.REPEAT_MODE_NONE -> RepeatMode.REPEAT_NONE
                 else -> RepeatMode.REPEAT_ALL
             }
         }

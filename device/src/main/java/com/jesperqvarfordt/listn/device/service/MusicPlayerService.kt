@@ -10,6 +10,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import com.google.android.exoplayer2.Player
 import com.jesperqvarfordt.listn.device.R
 import com.jesperqvarfordt.listn.device.player.ExoPlayerAdapter
@@ -71,12 +72,16 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         private var queueIndex = -1
         var preparedMedia: MediaMetadataCompat? = null
         private var shouldContinue = false
+        private var lastSkip = 0L
         private val isReadyToPlay: Boolean
             get() = !playlist.isEmpty()
 
         override fun onAddQueueItem(description: MediaDescriptionCompat) {
             playlist.add(MediaSessionCompat.QueueItem(description, description.hashCode().toLong()))
             queueIndex = if (queueIndex == -1) 0 else queueIndex
+            val distinctPlaylist = playlist.distinctBy { it.description.mediaId }
+            playlist.clear()
+            playlist.addAll(distinctPlaylist)
         }
 
         override fun onRemoveQueueItem(description: MediaDescriptionCompat) {
@@ -107,6 +112,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             }
 
             if (shouldContinue && preparedMedia != null) {
+                Log.d("asdf", "playing queue index $queueIndex")
                 player.play()
                 shouldContinue = false
                 return
@@ -117,6 +123,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             }
 
             player.play()
+            Log.d("asdf", "playing queue index $queueIndex")
             shouldContinue = false
         }
 
@@ -137,6 +144,14 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         }
 
         override fun onSkipToNext() {
+            // This is an ugly workaround for a bug in ExoPlayer that sometimes skip twice fast
+            val now = System.currentTimeMillis()
+            if (now-lastSkip < 100) {
+                lastSkip = now
+                return
+            }
+            lastSkip = now
+
             preparedMedia = null
 
             if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_ALL) {
@@ -145,6 +160,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
                 queueIndex = ++queueIndex % playlist.size
                 if (queueIndex == 0) {
                     onPause()
+                    onPrepare()
                     return
                 }
             }
@@ -197,6 +213,8 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         override fun onSetRepeatMode(repeatMode: Int) {
             mediaSession.setRepeatMode(repeatMode)
         }
+
+
     }
 
     private fun getState(exoPlayerState: Int): Int {
