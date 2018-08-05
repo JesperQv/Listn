@@ -35,7 +35,7 @@ class SCTrackRepositoryTest {
     @Throws(Exception::class)
     fun `search fails`() {
         val throwable = Throwable("test fail")
-       `when`(api.searchTracks(anyString())).thenReturn(Observable.error(throwable))
+        `when`(api.searchTracks(anyString())).thenReturn(Observable.error(throwable))
 
         repository.search(testQuery).test().assertError(throwable)
 
@@ -47,7 +47,7 @@ class SCTrackRepositoryTest {
     @Test
     @Throws(Exception::class)
     fun `search completes`() {
-        val result = listOf(SCTrack("test", "test", "test", 10, null))
+        val result = listOf(SCTrack(1, "test", "test", "test", 10, null))
         `when`(api.searchTracks(anyString())).thenReturn(Observable.just(result))
 
         val mappedResult = result.map { mapper.map(it) }.toList()

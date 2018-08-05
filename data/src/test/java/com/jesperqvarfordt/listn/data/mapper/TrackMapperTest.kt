@@ -18,7 +18,7 @@ class TrackMapperTest {
     private val durationInMs = 1000L
     private val name = "name"
     private val user = SCUser(name)
-    private val scTrack = SCTrack(title, streamUrl, coverUrl, durationInMs, user)
+    private val scTrack = SCTrack(1, title, streamUrl, coverUrl, durationInMs, user)
 
     @Before
     @Throws(Exception::class)
@@ -31,7 +31,7 @@ class TrackMapperTest {
     @Test
     @Throws(Exception::class)
     fun `mapper works for title`() {
-        val track  = mapper.map(scTrack)
+        val track = mapper.map(scTrack)
 
         assertEquals(track.title, title)
     }
@@ -39,15 +39,15 @@ class TrackMapperTest {
     @Test
     @Throws(Exception::class)
     fun `mapper works for stream url`() {
-        val track  = mapper.map(scTrack)
+        val track = mapper.map(scTrack)
 
-        assertEquals(track.streamUrl, streamUrl  + "/stream"+ "?client_id=" + clientId)
+        assertEquals(track.streamUrl, streamUrl + "/stream" + "?client_id=" + clientId)
     }
 
     @Test
     @Throws(Exception::class)
     fun `mapper works for thumbnail`() {
-        val track  = mapper.map(scTrack)
+        val track = mapper.map(scTrack)
 
         assertEquals(track.thumbnailUrl, coverUrl)
     }
@@ -55,7 +55,7 @@ class TrackMapperTest {
     @Test
     @Throws(Exception::class)
     fun `mapper works for large image url`() {
-        val track  = mapper.map(scTrack)
+        val track = mapper.map(scTrack)
 
         assertEquals(track.largeImageUrl, coverUrl.replace("large", "t500x500"))
     }
@@ -63,7 +63,7 @@ class TrackMapperTest {
     @Test
     @Throws(Exception::class)
     fun `mapper works for duration`() {
-        val track  = mapper.map(scTrack)
+        val track = mapper.map(scTrack)
 
         assertEquals(track.durationInMs, durationInMs)
     }
@@ -71,7 +71,7 @@ class TrackMapperTest {
     @Test
     @Throws(Exception::class)
     fun `mapper works for artist name`() {
-        val track  = mapper.map(scTrack)
+        val track = mapper.map(scTrack)
 
         assertEquals(track.artist, user.name)
     }

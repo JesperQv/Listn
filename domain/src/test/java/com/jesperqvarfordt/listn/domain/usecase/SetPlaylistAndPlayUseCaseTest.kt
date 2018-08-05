@@ -23,17 +23,17 @@ class SetPlaylistAndPlayUseCaseTest {
     @Throws(Exception::class)
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        testData.add(Track("title", "artist", "url", "url", "streamUrl", 1))
-        testData.add(Track("title2", "artist2", "url2", "url2", "streamUrl2", 2))
+        testData.add(Track(1, "title", "artist", "url", "url", "streamUrl", 1))
+        testData.add(Track(2, "title2", "artist2", "url2", "url2", "streamUrl2", 2))
         useCase = SetPlaylistAndPlayUseCase(musicPlayer, Schedulers.trampoline(), Schedulers.trampoline())
     }
 
     @Test
     @Throws(Exception::class)
     fun `execute completes`() {
-        Mockito.`when`(musicPlayer.setPlaylistAndPlay(testData)).thenReturn(Completable.complete())
-        useCase.execute(testData).test().assertComplete().assertNoErrors()
-        Mockito.verify(musicPlayer, Mockito.times(1)).setPlaylistAndPlay(testData)
+        Mockito.`when`(musicPlayer.setPlaylistAndPlay(testData, 1)).thenReturn(Completable.complete())
+        useCase.execute(testData, 1).test().assertComplete().assertNoErrors()
+        Mockito.verify(musicPlayer, Mockito.times(1)).setPlaylistAndPlay(testData, 1)
         Mockito.verifyNoMoreInteractions(musicPlayer)
     }
 
@@ -41,9 +41,9 @@ class SetPlaylistAndPlayUseCaseTest {
     @Throws(Exception::class)
     fun `execute throws error`() {
         val throwable = Throwable("test fail")
-        Mockito.`when`(musicPlayer.setPlaylistAndPlay(testData)).thenReturn(Completable.error(throwable))
-        useCase.execute(testData).test().assertError(throwable)
-        Mockito.verify(musicPlayer, Mockito.times(1)).setPlaylistAndPlay(testData)
+        Mockito.`when`(musicPlayer.setPlaylistAndPlay(testData, 1)).thenReturn(Completable.error(throwable))
+        useCase.execute(testData, 1).test().assertError(throwable)
+        Mockito.verify(musicPlayer, Mockito.times(1)).setPlaylistAndPlay(testData, 1)
         Mockito.verifyNoMoreInteractions(musicPlayer)
     }
 }

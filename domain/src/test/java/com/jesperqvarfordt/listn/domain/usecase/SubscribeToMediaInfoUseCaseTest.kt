@@ -17,7 +17,7 @@ class SubscribeToMediaInfoUseCaseTest {
     @Mock
     private lateinit var musicPlayer: MusicPlayer
 
-    private val testMediaInfo = MediaInfo("title", "artist", "url", 10)
+    private val testMediaInfo = MediaInfo(1, "title", "artist", "url", 10)
 
 
     @Before

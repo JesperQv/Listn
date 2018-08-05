@@ -6,7 +6,7 @@ import com.jesperqvarfordt.listn.domain.usecase.base.UseCase
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 
-class ShuffleUseCase(private val player: MusicPlayer,
+open class ShuffleUseCase(private val player: MusicPlayer,
                      executionScheduler: Scheduler,
                      uiScheduler: Scheduler) : UseCase(executionScheduler, uiScheduler) {
 

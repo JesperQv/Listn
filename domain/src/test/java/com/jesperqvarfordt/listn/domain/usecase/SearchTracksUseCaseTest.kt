@@ -24,8 +24,8 @@ class SearchTracksUseCaseTest {
     @Throws(Exception::class)
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        testResult.add(Track("title", "artist", "url", "url", "streamUrl", 1))
-        testResult.add(Track("title2", "artist2", "url2", "url2", "streamUrl2", 2))
+        testResult.add(Track(1, "title", "artist", "url", "url", "streamUrl", 1))
+        testResult.add(Track(2, "title2", "artist2", "url2", "url2", "streamUrl2", 2))
         useCase = SearchTracksUseCase(repository, Schedulers.trampoline(), Schedulers.trampoline())
     }
 
