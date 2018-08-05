@@ -124,7 +124,7 @@ abstract class PlayerAdapter(private val context: Context) {
                 AudioManager.AUDIOFOCUS_LOSS -> {
                     audioManager.abandonAudioFocus(this)
                     playOnAudioFocus = false
-                    stop()
+                    pause()
                 }
             }
         }

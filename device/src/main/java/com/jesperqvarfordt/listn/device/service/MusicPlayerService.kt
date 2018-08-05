@@ -10,7 +10,6 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import com.google.android.exoplayer2.Player
 import com.jesperqvarfordt.listn.device.R
 import com.jesperqvarfordt.listn.device.player.ExoPlayerAdapter
@@ -112,7 +111,6 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             }
 
             if (shouldContinue && preparedMedia != null) {
-                Log.d("asdf", "playing queue index $queueIndex")
                 player.play()
                 shouldContinue = false
                 return
@@ -123,7 +121,6 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             }
 
             player.play()
-            Log.d("asdf", "playing queue index $queueIndex")
             shouldContinue = false
         }
 
