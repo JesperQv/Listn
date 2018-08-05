@@ -211,7 +211,10 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             mediaSession.setRepeatMode(repeatMode)
         }
 
-
+        override fun onSkipToQueueItem(id: Long) {
+            super.onSkipToQueueItem(id)
+            queueIndex = playlist.indexOf(playlist.first { it.description.mediaId?.toLong() == id })
+        }
     }
 
     private fun getState(exoPlayerState: Int): Int {
@@ -304,8 +307,8 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
     }
 
     companion object {
-        val notificationAction = "notificationAction"
-        val argNotificationConfig = "notificationConfig"
+        const val notificationAction = "notificationAction"
+        const val argNotificationConfig = "notificationConfig"
     }
 
 }

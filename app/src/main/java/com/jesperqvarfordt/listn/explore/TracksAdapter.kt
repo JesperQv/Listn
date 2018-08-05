@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import com.jesperqvarfordt.listn.R
 import com.jesperqvarfordt.listn.common.extensions.msToTimeStamp
 import com.jesperqvarfordt.listn.common.extensions.setVisible
-import com.jesperqvarfordt.listn.common.extensions.shuffleTo
 import com.jesperqvarfordt.listn.domain.model.Track
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.item_track.view.*
 
 class TracksAdapter
-constructor(private val trackClicked: (tracks: List<Track>) -> Unit) :
+constructor(private val trackClicked: (tracks: List<Track>, clickedId: Int) -> Unit) :
         RecyclerView.Adapter<TracksAdapter.TrackViewHolder>() {
 
     private var tracks: MutableList<Track> = mutableListOf()
@@ -58,8 +57,7 @@ constructor(private val trackClicked: (tracks: List<Track>) -> Unit) :
 
             itemView.trackDuration.text = track.durationInMs.msToTimeStamp()
             itemView.setOnClickListener({
-                val temp = tracks.toMutableList()
-                trackClicked.invoke(temp.shuffleTo(pos))
+                trackClicked.invoke(tracks, track.id)
             })
             val transformation = RoundedCornersTransformation(4, 0)
             Picasso.with(itemView.context).load(track.thumbnailUrl).transform(transformation).into(itemView.coverImage)

@@ -27,8 +27,8 @@ import javax.inject.Inject
 class ExploreFragment : Fragment(),
         ExploreContract.View {
 
-    private val tracksAdapter = TracksAdapter(trackClicked = { tracks ->
-        presenter.trackClicked(tracks)
+    private val tracksAdapter = TracksAdapter(trackClicked = { tracks, id ->
+        presenter.trackClicked(tracks, id)
     })
 
     private val chartsAdapter = ChartsAdapter(chartClicked = { chart ->

@@ -18,7 +18,7 @@ interface MusicPlayer {
     fun skipForward(): Completable
     fun skipBackwards(): Completable
     fun seekTo(pos: Long): Completable
-    fun setPlaylistAndPlay(newPlaylist: List<Track>): Completable
+    fun setPlaylistAndPlay(newPlaylist: List<Track>, startPlayingId: Int): Completable
     fun repeat(repeatMode: RepeatMode): Completable
     fun shuffle(shuffleMode: ShuffleMode): Completable
     fun tearDown()

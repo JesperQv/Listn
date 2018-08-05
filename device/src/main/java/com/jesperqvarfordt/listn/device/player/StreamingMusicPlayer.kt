@@ -32,6 +32,7 @@ constructor(private val context: Context,
     private lateinit var mediaController: MediaControllerCompat
     private val mediaControllerCallback = MediaControllerCallback()
     private var playWhenReady = false
+    private var startPlayingId = 0
 
     override val playerInfoObservable: Observable<PlayerInfo> = BehaviorSubject.create<PlayerInfo>()
     override val mediaInfoObservable: Observable<MediaInfo> = BehaviorSubject.create<MediaInfo>()
@@ -113,7 +114,8 @@ constructor(private val context: Context,
         return Completable.complete()
     }
 
-    override fun setPlaylistAndPlay(newPlaylist: List<Track>): Completable {
+    override fun setPlaylistAndPlay(newPlaylist: List<Track>, startPlayingId: Int): Completable {
+        this.startPlayingId = startPlayingId
         playlist = newPlaylist.toMediaMetadata(imageCache)
         playWhenReady = true
         if (mediaBrowser == null || !mediaBrowser!!.isConnected) {
@@ -175,6 +177,7 @@ constructor(private val context: Context,
             for (mediaItem in children) {
                 mediaController.addQueueItem(mediaItem.description)
             }
+            mediaController.transportControls.skipToQueueItem(startPlayingId.toLong())
 
             if (mediaController.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
                 mediaController.transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
