@@ -14,11 +14,8 @@ jobs:
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Test
-          command: ls
-      - run:
           name: Download google-services.json
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > ${HOME}/Listn/app/google-services.json
+          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -45,7 +42,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Download google-services.json
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > ${HOME}/Listn/app/google-services.json
+          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -87,7 +84,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Download google-services.json
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > ${HOME}/Listn/app/google-services.json
+          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
