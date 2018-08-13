@@ -44,6 +44,15 @@ jobs:
           name: Copy google-services.json
           command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
       - run:
+          name: test1
+          command: mkdir -p app/src/debug
+      - run:
+          name: test2
+          command: cd app/src
+      - run:
+          name: test3
+          command: ls
+      - run:
           name: Copy debug google-services.json
           command: mkdir -p app/src/debug
           command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/debug/google-services.json    
