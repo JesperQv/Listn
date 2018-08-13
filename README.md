@@ -4,6 +4,7 @@ App can be downloaded from [here](https://play.google.com/store/apps/details?id=
 App requires a Soundcloud API key to use properly.
 
 Design by [Anton Andersson Andrejić](http://www.iamanton.se/)
+
 Code by [me](https://jesperqvarfordt.com/)
 
 <p align="center">
