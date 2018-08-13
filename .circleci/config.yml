@@ -44,9 +44,6 @@ jobs:
           name: Download google-services.json
           command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
       - run:
-          name: Download debug google-services.json
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/debug/google-services.json
-      - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
