@@ -49,8 +49,6 @@ jobs:
       - run:
           name: test2
           command: cd app/src
-      - run:
-          name: test3
           command: ls
       - run:
           name: Copy debug google-services.json
