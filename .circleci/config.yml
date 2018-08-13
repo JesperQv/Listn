@@ -15,7 +15,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Copy google-services.json
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
+          command: echo ${GOOGLE_SERVICES} | base64 --decode > app/google-services.json
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -42,7 +42,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Copy google-services.json
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
+          command: echo ${GOOGLE_SERVICES} | base64 --decode > app/google-services.json
       - run:
           name: test
           command: cat app/google-services.json
@@ -51,13 +51,13 @@ jobs:
           command: mkdir -p app/src/debug
       - run:
           name: Copy debug google-services.json
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/debug/google-services.json
+          command: echo ${GOOGLE_SERVICES} | base64 --decode > app/src/debug/google-services.json
       - run:
           name: make release folder
           command: mkdir -p app/src/release
       - run:
           name: Copy release google-services.json
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/release/google-services.json
+          command: echo ${GOOGLE_SERVICES} | base64 --decode > app/src/release/google-services.json
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -99,7 +99,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Copy google-services.json
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
+          command: echo ${GOOGLE_SERVICES} | base64 --decode > app/google-services.json
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
