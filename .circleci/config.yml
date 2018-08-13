@@ -43,7 +43,7 @@ jobs:
       - run:
           name: Download google-services.json
           command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
-          - run:
+      - run:
           name: Download debug google-services.json
           command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/debug/google-services.json
       - run:
