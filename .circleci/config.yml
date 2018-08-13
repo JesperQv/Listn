@@ -48,26 +48,6 @@ jobs:
           command: mkdir -p app/src/debug
           command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/debug/google-services.json
       - run:
-          name: Copy debug google-services.json
-          command: mkdir -p app/src/nullnull/release
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/nullnull/release/google-services.json
-      - run:
-          name: Copy debug google-services.json
-          command: mkdir -p app/src/release/nullnull
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/release/nullnull/google-services.json
-      - run:
-          name: Copy debug google-services.json
-          command: mkdir -p app/src/nullnull
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/nullnull/google-services.json
-      - run:
-          name: Copy debug google-services.json
-          command: mkdir -p app/src/release
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/release/google-services.json
-      - run:
-          name: Copy debug google-services.json
-          command: mkdir -p app/src/nullnullRelease
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/nullnullRelease/google-services.json
-      - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
