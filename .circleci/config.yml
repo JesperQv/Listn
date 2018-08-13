@@ -44,18 +44,29 @@ jobs:
           name: Copy google-services.json
           command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
       - run:
-          name: test1
-          command: mkdir -p app/src/debug
-      - run:
-          name: test2
-          command: cd app/src/debug && ls
-      - run:
           name: Copy debug google-services.json
           command: mkdir -p app/src/debug
-          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/debug/google-services.json 
-      - run:
-          name: test3
-          command: cd app/src/debug && ls
+          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/debug/google-services.json
+       - run:
+          name: Copy debug google-services.json
+          command: mkdir -p app/src/debug
+          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/nullnull/release/google-services.json
+       - run:
+          name: Copy debug google-services.json
+          command: mkdir -p app/src/debug
+          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/release/nullnull/google-services.json
+       - run:
+          name: Copy debug google-services.json
+          command: mkdir -p app/src/debug
+          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/nullnull/google-services.json
+       - run:
+          name: Copy debug google-services.json
+          command: mkdir -p app/src/debug
+          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/release/google-services.json
+       - run:
+          name: Copy debug google-services.json
+          command: mkdir -p app/src/debug
+          command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/nullnullRelease/google-services.json
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
