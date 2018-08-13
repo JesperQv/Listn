@@ -44,8 +44,10 @@ jobs:
           name: Copy google-services.json
           command: echo '${GOOGLE_SERVICES} | base64' --decode > app/google-services.json
       - run:
-          name: Copy debug google-services.json
+          name: make debug folder
           command: mkdir -p app/src/debug
+      - run:
+          name: Copy debug google-services.json
           command: echo '${GOOGLE_SERVICES} | base64' --decode > app/src/debug/google-services.json
       - run:
           name: Download Dependencies
