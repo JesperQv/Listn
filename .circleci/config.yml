@@ -48,8 +48,7 @@ jobs:
           command: mkdir -p app/src/debug
       - run:
           name: test2
-          command: cd app/src
-          command: ls
+          command: cd app/src && ls
       - run:
           name: Copy debug google-services.json
           command: mkdir -p app/src/debug
