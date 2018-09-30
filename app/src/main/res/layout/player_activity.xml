@@ -16,6 +16,16 @@
         android:layout_height="match_parent"
         android:background="@drawable/player_bg_gradient">
 
+        <android.support.v7.app.MediaRouteButton
+            android:id="@+id/chromeCastButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="25dp"
+            android:mediaRouteTypes="user"
+            app:mediaRouteButtonTint="@color/white" />
+
         <com.jesperqvarfordt.listn.common.view.waveview.WaveView
             android:id="@+id/waveView"
             android:layout_width="match_parent"
@@ -137,7 +147,7 @@
                 <com.jesperqvarfordt.listn.common.view.shuffletogglebutton.ShuffleToggleButton
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:layout_marginEnd="25dp"/>
+                    android:layout_marginEnd="25dp" />
 
                 <ImageView
                     android:id="@+id/previous"
@@ -166,7 +176,7 @@
                 <com.jesperqvarfordt.listn.common.view.repeattogglebutton.RepeatToggleButton
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:layout_marginStart="25dp"/>
+                    android:layout_marginStart="25dp" />
 
             </LinearLayout>
 

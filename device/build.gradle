@@ -35,8 +35,10 @@ dependencies {
     implementation project(':domain')
 
     implementation "com.android.support:support-v4:27.0.2"
+    implementation "com.android.support:mediarouter-v7:27.0.2"
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.google.android.exoplayer:exoplayer:2.6.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.7.0'
+    implementation 'com.google.android.exoplayer:extension-cast:2.7.0'
 
     implementation 'com.android.support:appcompat-v7:27.0.2'
     testImplementation 'junit:junit:4.12'

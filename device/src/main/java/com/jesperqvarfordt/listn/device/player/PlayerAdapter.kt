@@ -20,7 +20,7 @@ abstract class PlayerAdapter(private val context: Context) {
         }
     }
 
-    private val audioManager: AudioManager
+    private val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val audioFocusHelper: AudioFocusHelper
 
     private var playOnAudioFocus = false
@@ -28,7 +28,6 @@ abstract class PlayerAdapter(private val context: Context) {
     abstract val isPlaying: Boolean
 
     init {
-        audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         audioFocusHelper = AudioFocusHelper()
     }
 
@@ -131,8 +130,8 @@ abstract class PlayerAdapter(private val context: Context) {
     }
 
     companion object {
-        private val MEDIA_VOLUME_DEFAULT = 1.0f
-        private val MEDIA_VOLUME_DUCK = 0.2f
+        private const val MEDIA_VOLUME_DEFAULT = 1.0f
+        private const val MEDIA_VOLUME_DUCK = 0.2f
         private val AUDIO_NOISY_INTENT_FILTER = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
     }
 }

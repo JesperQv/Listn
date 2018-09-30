@@ -130,12 +130,12 @@ constructor(private val context: Context,
     }
 
     private fun loadAlbumArtAsync(newPlaylist: List<Track>) {
-        imageCache.loadAllImagesAndThenComplete(newPlaylist).subscribe({
+        imageCache.loadAllImagesAndThenComplete(newPlaylist).subscribe {
             playlist = newPlaylist.toMediaMetadata(imageCache)
             if (mediaBrowser != null && mediaBrowser!!.isConnected) {
                 mediaController.transportControls.prepare()
             }
-        })
+        }
     }
 
     private fun connectMediaBrowser() {

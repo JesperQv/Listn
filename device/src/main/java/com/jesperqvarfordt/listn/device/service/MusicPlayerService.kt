@@ -12,7 +12,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.exoplayer2.Player
 import com.jesperqvarfordt.listn.device.R
-import com.jesperqvarfordt.listn.device.player.ExoPlayerAdapter
+import com.jesperqvarfordt.listn.device.player.CastExoPlayerAdapter
 import com.jesperqvarfordt.listn.device.player.NotificationConfig
 import com.jesperqvarfordt.listn.device.player.StreamingMusicPlayer
 import java.util.*
@@ -22,16 +22,14 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaSessionCallback: MediaSessionCallback
-
     private val serviceManager = ServiceManager()
-    private lateinit var player: ExoPlayerAdapter
-
+    private lateinit var playerAdapter: CastExoPlayerAdapter
     private var mediaNotificationManager: MediaNotificationManager? = null
     private var serviceInStartedState = false
 
     override fun onCreate() {
         super.onCreate()
-        player = ExoPlayerAdapter(this, serviceManager)
+        playerAdapter = CastExoPlayerAdapter(this, serviceManager)
         mediaSession = MediaSessionCompat(applicationContext, "ListnMediaSession")
         mediaSessionCallback = MediaSessionCallback()
         mediaSession.setCallback(mediaSessionCallback)
@@ -43,7 +41,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
 
     override fun onDestroy() {
         super.onDestroy()
-        player.stop()
+        playerAdapter.stop()
         mediaSession.release()
     }
 
@@ -97,7 +95,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             val mediaId = playlist[queueIndex].description.mediaId
             preparedMedia = StreamingMusicPlayer.getMediaMetadataById(mediaId)
             mediaSession.setMetadata(preparedMedia)
-            player.prepare(preparedMedia)
+            playerAdapter.prepare(preparedMedia)
 
             if (!mediaSession.isActive) {
                 mediaSession.isActive = true
@@ -111,7 +109,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             }
 
             if (shouldContinue && preparedMedia != null) {
-                player.play()
+                playerAdapter.play()
                 shouldContinue = false
                 return
             }
@@ -120,17 +118,17 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
                 onPrepare()
             }
 
-            player.play()
+            playerAdapter.play()
             shouldContinue = false
         }
 
         override fun onPause() {
             shouldContinue = true
-            player.pause()
+            playerAdapter.pause()
         }
 
         override fun onStop() {
-            player.pause()
+            playerAdapter.pause()
             mediaSession.isActive = false
             playlist.clear()
             queueIndex = -1
@@ -163,7 +161,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             }
             // REPEAT_MODE_ONE: nothing happens, don't change the queueIndex
 
-            if (player.isPlaying) {
+            if (playerAdapter.isPlaying) {
                 onPlay()
             } else {
                 onPrepare()
@@ -179,7 +177,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             }
             // REPEAT_MODE_ONE: nothing happens, don't change the queueIndex
 
-            if (player.isPlaying) {
+            if (playerAdapter.isPlaying) {
                 onPlay()
             } else {
                 onPrepare()
@@ -187,7 +185,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         }
 
         override fun onSeekTo(pos: Long) {
-            player.seekTo(pos)
+            playerAdapter.seekTo(pos)
         }
 
         override fun onSetShuffleMode(shuffleMode: Int) {
@@ -222,7 +220,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         return when (exoPlayerState) {
             Player.STATE_IDLE -> PlaybackStateCompat.STATE_PAUSED
             Player.STATE_BUFFERING -> PlaybackStateCompat.STATE_BUFFERING
-            Player.STATE_READY -> if (player.isPlaying)
+            Player.STATE_READY -> if (playerAdapter.isPlaying)
                 PlaybackStateCompat.STATE_PLAYING
             else
                 PlaybackStateCompat.STATE_PAUSED
@@ -250,14 +248,14 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         return actions
     }
 
-    inner class ServiceManager: ExoPlayerAdapter.ExoPlayerStateChangeListener {
+    inner class ServiceManager: CastExoPlayerAdapter.ExoPlayerStateChangeListener {
 
         override fun onStateChange(playWhenReady: Boolean, playbackState: Int) {
             val state = getState(playbackState)
 
             val result = PlaybackStateCompat.Builder()
                     .setActions(getAvailableActions(state))
-                    .setState(state, player.currentPos, 1.0f, SystemClock.elapsedRealtime())
+                    .setState(state, playerAdapter.currentPos, 1.0f, SystemClock.elapsedRealtime())
                     .build()
 
             when (result.state) {
