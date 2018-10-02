@@ -8,18 +8,19 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import io.reactivex.Completable
 import io.reactivex.Observable
+import java.lang.Exception
 
-class ImageCache(private val context: Context) {
+class ImageCache {
 
     private val cache: MutableMap<String, Bitmap> = mutableMapOf()
 
     fun preloadImages(tracks: List<Track>) {
         if (cache.size > maxSize) cache.clear()
         tracks.map {
-            Picasso.with(context).load(it.largeImageUrl).into(object : Target {
+            Picasso.get().load(it.largeImageUrl).into(object : Target {
                 override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
 
-                override fun onBitmapFailed(errorDrawable: Drawable?) {}
+                override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
 
                 override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                     if (bitmap != null && it.largeImageUrl != null) {
@@ -38,22 +39,19 @@ class ImageCache(private val context: Context) {
     }
 
     private fun loadImageAsync(track: Track): Completable {
-        return Completable.fromCallable({
-            Picasso.with(context).load(track.largeImageUrl).into(object : Target {
+        return Completable.fromCallable {
+            Picasso.get().load(track.largeImageUrl).into(object : Target {
                 override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
 
-                override fun onBitmapFailed(errorDrawable: Drawable?) {
-                    Completable.error(Throwable("failed to load"))
-                }
+                override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
 
                 override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                     if (bitmap != null && track.largeImageUrl != null) {
                         cache[track.largeImageUrl!!] = bitmap
                     }
-                    Completable.complete()
                 }
             })
-        })
+        }
     }
 
     fun getBitmapIfCached(url: String?): Bitmap? {

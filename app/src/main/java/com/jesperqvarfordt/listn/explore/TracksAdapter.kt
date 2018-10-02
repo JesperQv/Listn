@@ -33,16 +33,16 @@ constructor(private val trackClicked: (tracks: List<Track>, clickedId: Int) -> U
         return tracks.size
     }
 
-    override fun onBindViewHolder(holder: TrackViewHolder?, position: Int) {
-        holder?.onBind(tracks[position], position, playingId)
+    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
+        holder.onBind(tracks[position], position, playingId)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TrackViewHolder {
-        return TrackViewHolder(LayoutInflater.from(parent?.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
+        return TrackViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_track, parent, false))
     }
 
-    inner class TrackViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+    inner class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun onBind(track: Track, pos: Int, playingId: Int) {
             if (track.id == playingId) {
@@ -56,11 +56,11 @@ constructor(private val trackClicked: (tracks: List<Track>, clickedId: Int) -> U
             }
 
             itemView.trackDuration.text = track.durationInMs.msToTimeStamp()
-            itemView.setOnClickListener({
+            itemView.setOnClickListener {
                 trackClicked.invoke(tracks, track.id)
-            })
+            }
             val transformation = RoundedCornersTransformation(4, 0)
-            Picasso.with(itemView.context).load(track.thumbnailUrl).transform(transformation).into(itemView.coverImage)
+            Picasso.get().load(track.thumbnailUrl).transform(transformation).into(itemView.coverImage)
         }
 
     }

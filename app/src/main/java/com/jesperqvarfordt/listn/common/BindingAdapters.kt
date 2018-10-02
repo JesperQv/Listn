@@ -13,7 +13,7 @@ object ImageBindingAdapter {
             return
         }
         val transformation = RoundedCornersTransformation(10, 0)
-        Picasso.with(imageView.context).load(url).transform(transformation).into(imageView)
+        Picasso.get().load(url).transform(transformation).into(imageView)
         imageView.tag = url
     }
 }

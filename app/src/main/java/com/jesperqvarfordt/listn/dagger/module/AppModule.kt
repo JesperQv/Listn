@@ -18,8 +18,8 @@ class AppModule(private val app: App) {
 
     @Provides
     @Singleton
-    fun imageCache(context: Context): ImageCache {
-        return ImageCache(context)
+    fun imageCache(): ImageCache {
+        return ImageCache()
     }
 
 }
