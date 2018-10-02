@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.jesperqvarfordt.listn.App
 import com.jesperqvarfordt.listn.R
+import io.reactivex.disposables.CompositeDisposable
 
 
 open class WaveView : View {
@@ -29,6 +30,8 @@ open class WaveView : View {
 
     private var paint: Paint? = null
     private var path: Path? = null
+
+    private var disposables = CompositeDisposable()
 
     constructor(context: Context) : super(context) {
         setUp(null)
@@ -84,34 +87,11 @@ open class WaveView : View {
         }
 
         paint = Paint()
-        paint!!.color = waveColor
-        paint!!.style = Paint.Style.FILL_AND_STROKE
-        paint!!.isAntiAlias = true
+        paint?.color = waveColor
+        paint?.style = Paint.Style.FILL_AND_STROKE
+        paint?.isAntiAlias = true
 
         path = Path()
-
-        var va: ValueAnimator? = null
-        App.instance.appComponent.subscribeToPlayerInfoUseCase()
-                .execute()
-                .subscribe { data ->
-                    if (data.isPlaying) {
-                        va?.cancel()
-                        va = ValueAnimator.ofFloat(amplitude, defaultAmplitude)
-                        va?.duration = 1000
-                        va?.addUpdateListener( { valueAnimator ->
-                            amplitude = valueAnimator.animatedValue as Float
-                        })
-                        va?.start()
-                    } else {
-                        va?.cancel()
-                        va = ValueAnimator.ofFloat(amplitude, 5.0f)
-                        va?.duration = 1000
-                        va?.addUpdateListener( { valueAnimator ->
-                            amplitude = valueAnimator.animatedValue as Float
-                        })
-                        va?.start()
-                    }
-                }
 
     }
 
@@ -123,22 +103,53 @@ open class WaveView : View {
         }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        var va: ValueAnimator? = null
+        disposables.add(App.instance.appComponent.subscribeToPlayerInfoUseCase()
+                .execute()
+                .subscribe { data ->
+                    if (data.isPlaying) {
+                        va?.cancel()
+                        va = ValueAnimator.ofFloat(amplitude, defaultAmplitude)
+                        va?.duration = 1000
+                        va?.addUpdateListener { valueAnimator ->
+                            amplitude = valueAnimator.animatedValue as Float
+                        }
+                        va?.start()
+                    } else {
+                        va?.cancel()
+                        va = ValueAnimator.ofFloat(amplitude, 5.0f)
+                        va?.duration = 1000
+                        va?.addUpdateListener { valueAnimator ->
+                            amplitude = valueAnimator.animatedValue as Float
+                        }
+                        va?.start()
+                    }
+                })
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        disposables.clear()
+    }
+
     override fun onDraw(canvas: Canvas) {
         canvas.drawColor(bgColor)
 
         // Prepare common values
-        val xAxisPosition = canvas.height * xAxisPositionMultiplier
-        val width = canvas.width
-        val mid = canvas.width / 2
+        val xAxisPosition = height * xAxisPositionMultiplier
+        val width = width
+        val mid = width / 2
 
         for (i in 0 until numberOfWaves) {
             // Prepare variables for this wave
-            paint!!.strokeWidth = if (i == 0) primaryWaveLineWidth else secondaryWaveLineWidth
+            paint?.strokeWidth = if (i == 0) primaryWaveLineWidth else secondaryWaveLineWidth
             val progress = 1.0f - i.toFloat() / this.numberOfWaves
             val normedAmplitude = (1.5f * progress - 0.5f) * this.amplitude
 
             // Prepare path for this wave
-            path!!.reset()
+            path?.reset()
             var x = 0f
             while (x < width + density) {
                 // We use a parable to scale the sinus wave, that has its peak in the middle of
@@ -149,21 +160,23 @@ open class WaveView : View {
                         * Math.sin(2.0 * Math.PI * (x / width).toDouble() * frequency.toDouble() + phase * (i + 1))) + xAxisPosition).toFloat()
 
                 if (x == 0f) {
-                    path!!.moveTo(x, y)
+                    path?.moveTo(x, y)
                 } else {
-                    path!!.lineTo(x, y)
+                    path?.lineTo(x, y)
                 }
                 x += density
             }
-            path!!.lineTo(x, canvas.height.toFloat())
-            path!!.lineTo(0f, canvas.height.toFloat())
-            path!!.close()
+            path?.lineTo(x, height.toFloat())
+            path?.lineTo(0f, height.toFloat())
+            path?.close()
 
             // Set opacity for this wave fill
-            paint!!.alpha = if (i == 0) 255 else 255 / (i + 1)
+            paint?.alpha = if (i == 0) 255 else 255 / (i + 1)
 
             // Draw wave
-            canvas.drawPath(path, paint)
+            if (path != null && paint != null){
+                canvas.drawPath(path!!, paint!!)
+            }
         }
 
         this.phase += phaseShift
@@ -171,17 +184,15 @@ open class WaveView : View {
     }
 
     companion object {
-
-        private val defaultNumberOfWaves = 5
-        private val defaultFrequency = 2.0f
-        private val defaultAmplitude = 10.25f
-        private val defaultPhaseShift = -0.05f
-        private val defaultDensity = 5.0f
-        private val defaultPrimaryLineWidth = 3.0f
-        private val defaultSecondaryLineWidth = 1.0f
-        private val defaultBackgroundColor = Color.BLACK
-        private val defaultWaveColor = Color.WHITE
-        private val defaultXAxisPositionMultiplier = 0.5f
-
+        private const val defaultNumberOfWaves = 5
+        private const val defaultFrequency = 2.0f
+        private const val defaultAmplitude = 10.25f
+        private const val defaultPhaseShift = -0.05f
+        private const val defaultDensity = 5.0f
+        private const val defaultPrimaryLineWidth = 3.0f
+        private const val defaultSecondaryLineWidth = 1.0f
+        private const val defaultBackgroundColor = Color.BLACK
+        private const val defaultWaveColor = Color.WHITE
+        private const val defaultXAxisPositionMultiplier = 0.5f
     }
 }

@@ -1,12 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+def rootPath = rootProject.ext
+
 android {
-    compileSdkVersion 27
+    compileSdkVersion rootPath.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 27
+        minSdkVersion rootPath.minSdkVersion
+        targetSdkVersion rootPath.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -27,28 +29,31 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 }
 
 dependencies {
     implementation project(':domain')
 
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation "com.squareup.retrofit2:retrofit:$rootPath.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$rootPath.retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootPath.retrofitVersion"
 
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
-    implementation 'com.squareup.okhttp3:okhttp:3.8.1'
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootPath.okhttpVersion"
+    implementation "com.squareup.okhttp3:okhttp:$rootPath.okhttpVersion"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.13.0'
+    implementation "com.android.support:appcompat-v7:$rootPath.supportLibraryVersion"
+    testImplementation "junit:junit:$rootPath.junitVersion"
+    androidTestImplementation "com.android.support.test:runner:$rootPath.testRunnerVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootPath.espressoVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    testImplementation "org.mockito:mockito-core:$rootPath.mockitoVersion"
 }
 repositories {
     mavenCentral()

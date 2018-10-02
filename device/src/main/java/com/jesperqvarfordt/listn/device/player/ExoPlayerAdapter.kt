@@ -49,6 +49,7 @@ class ExoPlayerAdapter(val context: Context,
         dataSourceFactory = DefaultDataSourceFactory(context,
                 Util.getUserAgent(context, "Listn"), defaultBandwidthMeter)
         exoPlayer.addListener(ExoPlayerListener())
+        exoPlayer.audioAttributes
     }
 
     override fun prepare(metadata: MediaMetadataCompat?) {
@@ -102,7 +103,6 @@ class ExoPlayerAdapter(val context: Context,
         override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
             // Not needed for service
         }
-        override fun onTimelineChanged(timeline: Timeline?, manifest: Any?) {}
 
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             lastKnownState = playbackState

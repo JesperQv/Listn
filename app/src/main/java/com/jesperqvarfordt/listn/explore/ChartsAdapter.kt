@@ -24,13 +24,13 @@ constructor(private val chartClicked: (chart: Chart) -> Unit) :
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ChartsAdapter.ChartViewHolder{
-        return ChartViewHolder(LayoutInflater.from(parent?.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChartsAdapter.ChartViewHolder{
+        return ChartViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_chart, parent, false))
     }
 
-    override fun onBindViewHolder(holder: ChartsAdapter.ChartViewHolder?, position: Int) {
-        holder?.onBind(charts[position])
+    override fun onBindViewHolder(holder: ChartsAdapter.ChartViewHolder, position: Int) {
+        holder.onBind(charts[position])
     }
 
     override fun getItemCount(): Int {
@@ -44,7 +44,7 @@ constructor(private val chartClicked: (chart: Chart) -> Unit) :
             val width = (itemView.context as Activity).screenWidth()/2
             val height = 200.px
             val transformation = RoundedCornersTransformation(24, 12)
-            Picasso.with(itemView.context)
+            Picasso.get()
                     .load(chart.imageUrl)
                     .resize(width, height)
                     .centerCrop()

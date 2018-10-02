@@ -36,17 +36,17 @@ class RepeatToggleButton
     }
 
     override fun showRepeatNone() {
-        setImageDrawable(context.resources.getDrawable(R.drawable.ic_baseline_repeat_24dp))
+        setImageDrawable(context.getDrawable(R.drawable.ic_baseline_repeat_24dp))
         setColorFilter(context.resources.getColor(R.color.progress_grey))
     }
 
     override fun showRepeatAll() {
-        setImageDrawable(context.resources.getDrawable(R.drawable.ic_baseline_repeat_24dp))
+        setImageDrawable(context.getDrawable(R.drawable.ic_baseline_repeat_24dp))
         setColorFilter(context.resources.getColor(R.color.colorPrimary))
     }
 
     override fun showRepeatOne() {
-        setImageDrawable(context.resources.getDrawable(R.drawable.ic_baseline_repeat_one_24dp))
+        setImageDrawable(context.getDrawable(R.drawable.ic_baseline_repeat_one_24dp))
         setColorFilter(context.resources.getColor(R.color.colorPrimary))
     }
 }
