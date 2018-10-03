@@ -5,7 +5,7 @@ App requires a Soundcloud API key to use properly.
 
 Design by [Anton Andersson Andrejić](http://www.iamanton.se/)
 
-Code by [me](https://jesperqvarfordt.com/)
+Code by [me](https://www.linkedin.com/in/jesper-qvarfordt-32a55996/)
 
 <p align="center">
     <img src ="resources/demo.gif" height=500 />
