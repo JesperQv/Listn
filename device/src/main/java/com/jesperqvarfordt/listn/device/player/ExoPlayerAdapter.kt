@@ -63,7 +63,7 @@ class ExoPlayerAdapter(val context: Context,
         exoPlayer.setAudioAttributes(audioAttributes, true)
     }
 
-    override fun prepare(description: MediaDescriptionCompat?) {
+    override fun prepare() {
         exoPlayer.prepare(concatenatingMediaSource)
     }
 
@@ -97,7 +97,7 @@ class ExoPlayerAdapter(val context: Context,
     }
 
     override fun previous() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        exoPlayer.seekTo(exoPlayer.previousWindowIndex, 0)
     }
 
     override fun seekTo(position: Long) {

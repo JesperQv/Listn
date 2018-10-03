@@ -71,52 +71,53 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         private var sortedPlaylist = ArrayList<MediaSessionCompat.QueueItem>()
         private var queueIndex = -1
         var preparedMedia: MediaMetadataCompat? = null
-        private var shouldContinue = false
-        private var lastSkip = 0L
-        private val isReadyToPlay: Boolean
-            get() = !playlist.isEmpty()
+        //private var shouldContinue = false
+        //private var lastSkip = 0L
+        //private val isReadyToPlay: Boolean
+           // get() = !playlist.isEmpty()
 
         fun updateCurrentMedia(newMediaIndex: Int) {
-            mediaSession.setMetadata(StreamingMusicPlayer.getMediaMetadataById(playlist[newMediaIndex].description.mediaId))
+            preparedMedia = StreamingMusicPlayer.getMediaMetadataById(playlist[newMediaIndex].description.mediaId)
+            mediaSession.setMetadata(preparedMedia)
         }
 
         override fun onAddQueueItem(description: MediaDescriptionCompat) {
             playlist.add(MediaSessionCompat.QueueItem(description, description.hashCode().toLong()))
             player.addItem(description) //new
-            queueIndex = if (queueIndex == -1) 0 else queueIndex
+            //queueIndex = if (queueIndex == -1) 0 else queueIndex
             val distinctPlaylist = playlist.distinctBy { it.description.mediaId }
             playlist.clear()
             playlist.addAll(distinctPlaylist)
         }
 
         override fun onRemoveQueueItem(description: MediaDescriptionCompat) {
-            playlist.remove(MediaSessionCompat.QueueItem(description, description.hashCode().toLong()))
-            queueIndex = if (playlist.isEmpty()) -1 else queueIndex
+           /* playlist.remove(MediaSessionCompat.QueueItem(description, description.hashCode().toLong()))
+            queueIndex = if (playlist.isEmpty()) -1 else queueIndex*/
         }
 
         override fun onPrepare() {
-            if (queueIndex < 0 && playlist.isEmpty()) {
+            /*if (queueIndex < 0 && playlist.isEmpty()) {
                 // Nothing to play.
                 return
-            }
+            }*/
 
-            val mediaId = playlist[queueIndex].description.mediaId
+            /*val mediaId = playlist[queueIndex].description.mediaId
             preparedMedia = StreamingMusicPlayer.getMediaMetadataById(mediaId)
-            mediaSession.setMetadata(preparedMedia)
-            player.prepare(preparedMedia?.description)
+            mediaSession.setMetadata(preparedMedia)*/
+            player.prepare()
 
             if (!mediaSession.isActive) {
                 mediaSession.isActive = true
             }
-            shouldContinue = false
+            //shouldContinue = false
         }
 
         override fun onPlay() {
-            if (!isReadyToPlay) {
+            /*if (!isReadyToPlay) {
                 return
-            }
+            }*/
 
-            if (shouldContinue && preparedMedia != null) {
+            /*if (shouldContinue && preparedMedia != null) {
                 player.play()
                 shouldContinue = false
                 return
@@ -124,14 +125,14 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
 
             if (preparedMedia == null) {
                 onPrepare()
-            }
+            }*/
 
             player.play()
-            shouldContinue = false
+            //shouldContinue = false
         }
 
         override fun onPause() {
-            shouldContinue = true
+            //shouldContinue = true
             player.pause()
         }
 
@@ -140,8 +141,8 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             mediaSession.isActive = false
             playlist.clear()
             queueIndex = -1
-            preparedMedia = null
-            shouldContinue = false
+            /*preparedMedia = null
+            shouldContinue = false*/
             mediaNotificationManager?.notificationManager?.cancelAll()
             stopSelf()
         }
@@ -178,7 +179,8 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         }
 
         override fun onSkipToPrevious() {
-            preparedMedia = null
+            player.previous()
+            /*preparedMedia = null
             if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_ALL) {
                 queueIndex = if (queueIndex > 0) queueIndex - 1 else playlist.size - 1
             } else if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_NONE) {
@@ -190,7 +192,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
                 onPlay()
             } else {
                 onPrepare()
-            }
+            }*/
         }
 
         override fun onSeekTo(pos: Long) {
