@@ -1,6 +1,5 @@
 package com.jesperqvarfordt.listn.device.imagecache
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.jesperqvarfordt.listn.domain.model.Track
@@ -8,7 +7,6 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import io.reactivex.Completable
 import io.reactivex.Observable
-import java.lang.Exception
 
 class ImageCache {
 

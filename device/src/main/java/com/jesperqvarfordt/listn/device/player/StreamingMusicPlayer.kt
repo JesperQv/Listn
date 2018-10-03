@@ -18,6 +18,7 @@ import com.jesperqvarfordt.listn.domain.model.player.ShuffleMode
 import com.jesperqvarfordt.listn.domain.player.MusicPlayer
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 
 
@@ -36,6 +37,8 @@ constructor(private val context: Context,
 
     override val playerInfoObservable: Observable<PlayerInfo> = BehaviorSubject.create<PlayerInfo>()
     override val mediaInfoObservable: Observable<MediaInfo> = BehaviorSubject.create<MediaInfo>()
+
+    private val disposables = CompositeDisposable()
 
     companion object {
         private var playlist: List<MediaMetadataCompat> = emptyList()
@@ -61,9 +64,10 @@ constructor(private val context: Context,
         if (mediaBrowser != null && mediaBrowser!!.isConnected) {
             mediaController.transportControls.stop()
             mediaController.unregisterCallback(mediaControllerCallback)
-            mediaBrowser!!.unsubscribe(mediaBrowser!!.root)
-            mediaBrowser!!.disconnect()
+            mediaBrowser?.unsubscribe(mediaBrowser!!.root)
+            mediaBrowser?.disconnect()
         }
+        disposables.clear()
     }
 
     override fun play(): Completable {
@@ -77,7 +81,7 @@ constructor(private val context: Context,
     }
 
     override fun skipForward(): Completable {
-        if (mediaController.repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE){
+        if (mediaController.repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) {
             mediaController.transportControls.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL)
         }
         mediaController.transportControls.skipToNext()
@@ -85,7 +89,7 @@ constructor(private val context: Context,
     }
 
     override fun skipBackwards(): Completable {
-        if (mediaController.repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE){
+        if (mediaController.repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) {
             mediaController.transportControls.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL)
         }
         mediaController.transportControls.skipToPrevious()
@@ -130,7 +134,7 @@ constructor(private val context: Context,
     }
 
     private fun loadAlbumArtAsync(newPlaylist: List<Track>) {
-        imageCache.loadAllImagesAndThenComplete(newPlaylist).subscribe({
+        disposables.add(imageCache.loadAllImagesAndThenComplete(newPlaylist).subscribe {
             playlist = newPlaylist.toMediaMetadata(imageCache)
             if (mediaBrowser != null && mediaBrowser!!.isConnected) {
                 mediaController.transportControls.prepare()

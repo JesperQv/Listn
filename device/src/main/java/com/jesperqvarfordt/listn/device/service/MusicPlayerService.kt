@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.Player
 import com.jesperqvarfordt.listn.device.R
 import com.jesperqvarfordt.listn.device.player.ExoPlayerAdapter
 import com.jesperqvarfordt.listn.device.player.NotificationConfig
+import com.jesperqvarfordt.listn.device.player.PlayerAdapter
 import com.jesperqvarfordt.listn.device.player.StreamingMusicPlayer
 import java.util.*
 
@@ -24,7 +25,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
     private lateinit var mediaSessionCallback: MediaSessionCallback
 
     private val serviceManager = ServiceManager()
-    private lateinit var player: ExoPlayerAdapter
+    private lateinit var player: PlayerAdapter
 
     private var mediaNotificationManager: MediaNotificationManager? = null
     private var serviceInStartedState = false
@@ -75,8 +76,13 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         private val isReadyToPlay: Boolean
             get() = !playlist.isEmpty()
 
+        fun updateCurrentMedia(newMediaIndex: Int) {
+            mediaSession.setMetadata(StreamingMusicPlayer.getMediaMetadataById(playlist[newMediaIndex].description.mediaId))
+        }
+
         override fun onAddQueueItem(description: MediaDescriptionCompat) {
             playlist.add(MediaSessionCompat.QueueItem(description, description.hashCode().toLong()))
+            player.addItem(description) //new
             queueIndex = if (queueIndex == -1) 0 else queueIndex
             val distinctPlaylist = playlist.distinctBy { it.description.mediaId }
             playlist.clear()
@@ -97,7 +103,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             val mediaId = playlist[queueIndex].description.mediaId
             preparedMedia = StreamingMusicPlayer.getMediaMetadataById(mediaId)
             mediaSession.setMetadata(preparedMedia)
-            player.prepare(preparedMedia)
+            player.prepare(preparedMedia?.description)
 
             if (!mediaSession.isActive) {
                 mediaSession.isActive = true
@@ -141,7 +147,8 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         }
 
         override fun onSkipToNext() {
-            // This is an ugly workaround for a bug in ExoPlayer that sometimes skip twice fast
+            player.next()
+            /*// This is an ugly workaround for a bug in ExoPlayer that sometimes skip twice fast
             val now = System.currentTimeMillis()
             if (now-lastSkip < 100) {
                 lastSkip = now
@@ -167,7 +174,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
                 onPlay()
             } else {
                 onPrepare()
-            }
+            }*/
         }
 
         override fun onSkipToPrevious() {
@@ -251,6 +258,10 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
     }
 
     inner class ServiceManager: ExoPlayerAdapter.ExoPlayerStateChangeListener {
+
+        override fun onMediaChanged(newMediaIndex: Int) {
+            mediaSessionCallback.updateCurrentMedia(newMediaIndex)
+        }
 
         override fun onStateChange(playWhenReady: Boolean, playbackState: Int) {
             val state = getState(playbackState)
