@@ -14,6 +14,7 @@ interface PlayerAdapter {
     fun stop()
     fun next()
     fun previous()
+    fun skipToQueueItem(index: Int)
     fun seekTo(position: Long)
     fun setVolume(volume: Float)
 

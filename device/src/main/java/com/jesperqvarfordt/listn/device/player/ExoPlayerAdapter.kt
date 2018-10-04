@@ -100,6 +100,10 @@ class ExoPlayerAdapter(val context: Context,
         exoPlayer.seekTo(exoPlayer.previousWindowIndex, 0)
     }
 
+    override fun skipToQueueItem(index: Int) {
+        exoPlayer.seekTo(index, C.TIME_UNSET)
+    }
+
     override fun seekTo(position: Long) {
         exoPlayer.seekTo(position)
     }

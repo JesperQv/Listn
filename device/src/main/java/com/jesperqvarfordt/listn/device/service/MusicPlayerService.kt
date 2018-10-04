@@ -222,7 +222,8 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
 
         override fun onSkipToQueueItem(id: Long) {
             super.onSkipToQueueItem(id)
-            queueIndex = playlist.indexOf(playlist.first { it.description.mediaId?.toLong() == id })
+            player.skipToQueueItem(playlist.indexOf(playlist.first { it.description.mediaId?.toLong() == id }))
+            //queueIndex = playlist.indexOf(playlist.first { it.description.mediaId?.toLong() == id })
         }
     }
 
