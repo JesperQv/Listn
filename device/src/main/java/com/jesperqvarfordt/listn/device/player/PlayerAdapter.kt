@@ -9,13 +9,17 @@ interface PlayerAdapter {
 
     fun prepare()
     fun addItem(description: MediaDescriptionCompat?)
+    fun clearItems()
     fun play()
     fun pause()
     fun stop()
     fun next()
     fun previous()
+    fun setRepeatMode(mode: Int)
+    fun setShuffleMode(mode: Int)
     fun skipToQueueItem(index: Int)
     fun seekTo(position: Long)
     fun setVolume(volume: Float)
+    fun release()
 
 }

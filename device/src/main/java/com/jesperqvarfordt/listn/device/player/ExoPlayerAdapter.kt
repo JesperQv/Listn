@@ -6,6 +6,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
@@ -40,8 +41,6 @@ class ExoPlayerAdapter(val context: Context,
     private val defaultBandwidthMeter = DefaultBandwidthMeter()
     private val concatenatingMediaSource = ConcatenatingMediaSource()
 
-    private var skipToWhenReady = NO_SKIP_QUEUED
-
     private val tickRunnable = Runnable {
         run {
             //TODO maybe use this
@@ -68,11 +67,15 @@ class ExoPlayerAdapter(val context: Context,
     }
 
     override fun prepare() {
-        exoPlayer.prepare(concatenatingMediaSource)
+        exoPlayer.prepare(concatenatingMediaSource, false, true)
     }
 
     override fun addItem(description: MediaDescriptionCompat?) {
         concatenatingMediaSource.addMediaSource(buildMediaSource(description))
+    }
+
+    override fun clearItems() {
+        concatenatingMediaSource.clear()
     }
 
     private fun postTick() {
@@ -91,30 +94,56 @@ class ExoPlayerAdapter(val context: Context,
     }
 
     override fun stop() {
-        exoPlayer.playWhenReady = false
-        exoPlayer.release()
-        handler.removeCallbacks(tickRunnable)
+        pause()
+        exoPlayer.seekTo(0, 0)
     }
 
     override fun next() {
+        if (exoPlayer.nextWindowIndex == C.INDEX_UNSET) {
+            stop()
+            return
+        }
         exoPlayer.seekTo(exoPlayer.nextWindowIndex, 0)
     }
 
     override fun previous() {
+        if (exoPlayer.nextWindowIndex == C.INDEX_UNSET) {
+            pause()
+            return
+        }
         exoPlayer.seekTo(exoPlayer.previousWindowIndex, 0)
     }
 
     override fun skipToQueueItem(index: Int) {
-        if (exoPlayer.playbackState != PlaybackStateCompat.STATE_PLAYING) {
-            skipToWhenReady = index
-            return
-        }
-        skipToWhenReady = NO_SKIP_QUEUED
-        exoPlayer.seekTo(index, C.TIME_UNSET)
+        exoPlayer.seekTo(index, 0)
     }
 
     override fun seekTo(position: Long) {
-        exoPlayer.seekTo(position)
+        try {
+            exoPlayer.seekTo(position)
+        } catch (e: Exception) {
+            Log.d("asdf", e.toString())
+        }
+    }
+
+    override fun release() {
+        pause()
+        exoPlayer.release()
+    }
+
+    override fun setRepeatMode(mode: Int) {
+        when (mode) {
+            PlaybackStateCompat.REPEAT_MODE_ALL -> exoPlayer.repeatMode = REPEAT_MODE_ALL
+            PlaybackStateCompat.REPEAT_MODE_ONE -> exoPlayer.repeatMode = REPEAT_MODE_ONE
+            else -> exoPlayer.repeatMode = REPEAT_MODE_OFF
+        }
+    }
+
+    override fun setShuffleMode(mode: Int) {
+        when (mode) {
+            PlaybackStateCompat.SHUFFLE_MODE_ALL -> exoPlayer.shuffleModeEnabled = true
+            else -> exoPlayer.shuffleModeEnabled = false
+        }
     }
 
     override fun setVolume(volume: Float) {
@@ -134,30 +163,15 @@ class ExoPlayerAdapter(val context: Context,
         override fun onPlayerError(error: ExoPlaybackException?) {}
         override fun onLoadingChanged(isLoading: Boolean) {}
         override fun onPositionDiscontinuity(reason: Int) {}
-        override fun onRepeatModeChanged(repeatMode: Int) {
-            // Not needed for service
-        }
-
-
-        override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
-            // Not needed for service
-        }
-
+        override fun onRepeatModeChanged(repeatMode: Int) {}
+        override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {}
         override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
             listener.onMediaChanged(exoPlayer.currentWindowIndex)
         }
 
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            if (skipToWhenReady != NO_SKIP_QUEUED && playbackState == PlaybackStateCompat.STATE_PLAYING){
-                skipToQueueItem(skipToWhenReady)
-                return
-            }
             lastKnownState = playbackState
             listener.onStateChange(playWhenReady, playbackState)
         }
-    }
-
-    companion object {
-        private const val NO_SKIP_QUEUED = -1
     }
 }
