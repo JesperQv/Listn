@@ -3,6 +3,8 @@ package com.jesperqvarfordt.listn.device.player
 import android.content.Context
 import android.os.Handler
 import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -37,6 +39,8 @@ class ExoPlayerAdapter(val context: Context,
     private val extractorsFactory = DefaultExtractorsFactory()
     private val defaultBandwidthMeter = DefaultBandwidthMeter()
     private val concatenatingMediaSource = ConcatenatingMediaSource()
+
+    private var skipToWhenReady = NO_SKIP_QUEUED
 
     private val tickRunnable = Runnable {
         run {
@@ -101,6 +105,11 @@ class ExoPlayerAdapter(val context: Context,
     }
 
     override fun skipToQueueItem(index: Int) {
+        if (exoPlayer.playbackState != PlaybackStateCompat.STATE_PLAYING) {
+            skipToWhenReady = index
+            return
+        }
+        skipToWhenReady = NO_SKIP_QUEUED
         exoPlayer.seekTo(index, C.TIME_UNSET)
     }
 
@@ -139,8 +148,16 @@ class ExoPlayerAdapter(val context: Context,
         }
 
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            if (skipToWhenReady != NO_SKIP_QUEUED && playbackState == PlaybackStateCompat.STATE_PLAYING){
+                skipToQueueItem(skipToWhenReady)
+                return
+            }
             lastKnownState = playbackState
             listener.onStateChange(playWhenReady, playbackState)
         }
+    }
+
+    companion object {
+        private const val NO_SKIP_QUEUED = -1
     }
 }
