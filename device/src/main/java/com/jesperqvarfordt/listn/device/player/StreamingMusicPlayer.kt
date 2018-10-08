@@ -41,7 +41,7 @@ constructor(private val context: Context,
     private val disposables = CompositeDisposable()
 
     companion object {
-        private var playlist: List<MediaMetadataCompat> = emptyList()
+        var playlist: List<MediaMetadataCompat> = emptyList()
         fun playerResources(): MutableList<MediaBrowserCompat.MediaItem> {
             val result = playlist.map {
                 MediaBrowserCompat.MediaItem(

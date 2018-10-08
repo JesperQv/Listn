@@ -43,7 +43,10 @@ dependencies {
     implementation ("com.squareup.picasso:picasso:$rootPath.picassoVersion") {
         exclude module: 'exifinterface'
     }
+
     implementation "com.google.android.exoplayer:exoplayer:$rootPath.exoPlayerVersion"
+    implementation "com.google.android.exoplayer:extension-cast:$rootPath.exoPlayerVersion"
+    implementation "com.google.android.exoplayer:extension-mediasession:$rootPath.exoPlayerVersion"
 
     implementation "com.android.support:appcompat-v7:$rootPath.supportLibraryVersion"
     testImplementation "junit:junit:$rootPath.junitVersion"
