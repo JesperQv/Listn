@@ -8,6 +8,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.jesperqvarfordt.listn.device.imagecache.ImageCache
+import com.jesperqvarfordt.listn.device.isSameTracks
 import com.jesperqvarfordt.listn.device.service.MusicPlayerService
 import com.jesperqvarfordt.listn.device.toMediaMetadata
 import com.jesperqvarfordt.listn.domain.model.Track
@@ -120,12 +121,17 @@ constructor(private val context: Context,
 
     override fun setPlaylistAndPlay(newPlaylist: List<Track>, startPlayingId: Int): Completable {
         this.startPlayingId = startPlayingId
+        if (playlist.isSameTracks(newPlaylist)) {
+            mediaController.transportControls.skipToQueueItem(startPlayingId.toLong())
+            mediaController.transportControls.play()
+            return Completable.complete()
+        }
         playlist = newPlaylist.toMediaMetadata(imageCache)
         playWhenReady = true
         if (mediaBrowser == null || !mediaBrowser!!.isConnected) {
             connectMediaBrowser()
         } else {
-            mediaController.transportControls.stop()
+            mediaController.transportControls.pause()
             mediaBrowserSubscriptionCallback.onChildrenLoaded(mediaBrowser!!.root, playerResources())
         }
         loadAlbumArtAsync(newPlaylist)
@@ -136,9 +142,6 @@ constructor(private val context: Context,
     private fun loadAlbumArtAsync(newPlaylist: List<Track>) {
         disposables.add(imageCache.loadAllImagesAndThenComplete(newPlaylist).subscribe {
             playlist = newPlaylist.toMediaMetadata(imageCache)
-            if (mediaBrowser != null && mediaBrowser!!.isConnected) {
-                mediaController.transportControls.prepare()
-            }
         })
     }
 
@@ -154,7 +157,7 @@ constructor(private val context: Context,
     private fun updateNotification() {
         val bundle = Bundle()
         bundle.putParcelable(MusicPlayerService.argNotificationConfig, notificationConfig)
-        mediaBrowser?.sendCustomAction(MusicPlayerService.notificationAction, bundle, null)
+        mediaBrowser?.sendCustomAction(MusicPlayerService.NOTIFICATION_ACTION, bundle, null)
     }
 
     inner class MediaBrowserConnectionCallback : MediaBrowserCompat.ConnectionCallback() {
@@ -177,17 +180,15 @@ constructor(private val context: Context,
 
         override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
             super.onChildrenLoaded(parentId, children)
-
-            for (mediaItem in children) {
-                mediaController.addQueueItem(mediaItem.description)
-            }
-            mediaController.transportControls.skipToQueueItem(startPlayingId.toLong())
+            mediaController.transportControls.clearPlaylist()
+            children.onEach { mediaController.addQueueItem(it.description) }
 
             if (mediaController.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
                 mediaController.transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
             }
 
             mediaController.transportControls.prepare()
+            mediaController.transportControls.skipToQueueItem(startPlayingId.toLong())
 
             if (playWhenReady) {
                 mediaController.transportControls.play()
@@ -239,6 +240,7 @@ constructor(private val context: Context,
             playerInfoObservable.onNext(PlayerInfo(isPlaying, progress, shuffle, repeat))
         }
 
+        // TODO these shouldbe extension functions
         private fun getShuffleMode(shuffleMode: Int): ShuffleMode {
             return when (shuffleMode) {
                 PlaybackStateCompat.SHUFFLE_MODE_ALL -> ShuffleMode.SHUFFLE_ALL

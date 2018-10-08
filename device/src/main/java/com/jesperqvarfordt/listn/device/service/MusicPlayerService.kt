@@ -51,7 +51,7 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
     override fun onCustomAction(action: String, extras: Bundle?, result: Result<Bundle>) {
         super.onCustomAction(action, extras, result)
         when (action) {
-            notificationAction -> {
+            NOTIFICATION_ACTION -> {
                 val config = extras?.getParcelable<NotificationConfig>(argNotificationConfig) ?: return
                 mediaNotificationManager = MediaNotificationManager(this, config)
             }
@@ -68,13 +68,8 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
 
     inner class MediaSessionCallback : MediaSessionCompat.Callback() {
         private var playlist = ArrayList<MediaSessionCompat.QueueItem>()
-        private var sortedPlaylist = ArrayList<MediaSessionCompat.QueueItem>()
-        private var queueIndex = -1
         var preparedMedia: MediaMetadataCompat? = null
-        //private var shouldContinue = false
-        //private var lastSkip = 0L
-        //private val isReadyToPlay: Boolean
-           // get() = !playlist.isEmpty()
+        private var lastSkip = 0L
 
         fun updateCurrentMedia(newMediaIndex: Int) {
             preparedMedia = StreamingMusicPlayer.getMediaMetadataById(playlist[newMediaIndex].description.mediaId)
@@ -90,109 +85,43 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
             playlist.addAll(distinctPlaylist)
         }
 
-        override fun onRemoveQueueItem(description: MediaDescriptionCompat) {
-           /* playlist.remove(MediaSessionCompat.QueueItem(description, description.hashCode().toLong()))
-            queueIndex = if (playlist.isEmpty()) -1 else queueIndex*/
-        }
-
         override fun onPrepare() {
-            /*if (queueIndex < 0 && playlist.isEmpty()) {
-                // Nothing to play.
-                return
-            }*/
-
-            /*val mediaId = playlist[queueIndex].description.mediaId
-            preparedMedia = StreamingMusicPlayer.getMediaMetadataById(mediaId)
-            mediaSession.setMetadata(preparedMedia)*/
             player.prepare()
 
             if (!mediaSession.isActive) {
                 mediaSession.isActive = true
             }
-            //shouldContinue = false
         }
 
         override fun onPlay() {
-            /*if (!isReadyToPlay) {
-                return
-            }*/
-
-            /*if (shouldContinue && preparedMedia != null) {
-                player.play()
-                shouldContinue = false
-                return
-            }
-
-            if (preparedMedia == null) {
-                onPrepare()
-            }*/
-
             player.play()
-            //shouldContinue = false
         }
 
         override fun onPause() {
-            //shouldContinue = true
             player.pause()
         }
 
         override fun onStop() {
-            player.pause()
+            player.release()
             mediaSession.isActive = false
             playlist.clear()
-            queueIndex = -1
-            /*preparedMedia = null
-            shouldContinue = false*/
             mediaNotificationManager?.notificationManager?.cancelAll()
             stopSelf()
         }
 
         override fun onSkipToNext() {
-            player.next()
-            /*// This is an ugly workaround for a bug in ExoPlayer that sometimes skip twice fast
+            // This is an ugly workaround for a bug in ExoPlayer that sometimes skip twice fast
             val now = System.currentTimeMillis()
             if (now-lastSkip < 100) {
                 lastSkip = now
                 return
             }
             lastSkip = now
-
-            preparedMedia = null
-
-            if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_ALL) {
-                queueIndex = ++queueIndex % playlist.size
-            } else if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_NONE) {
-                queueIndex = ++queueIndex % playlist.size
-                if (queueIndex == 0) {
-                    onPause()
-                    onPrepare()
-                    return
-                }
-            }
-            // REPEAT_MODE_ONE: nothing happens, don't change the queueIndex
-
-            if (player.isPlaying) {
-                onPlay()
-            } else {
-                onPrepare()
-            }*/
+            player.next()
         }
 
         override fun onSkipToPrevious() {
             player.previous()
-            /*preparedMedia = null
-            if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_ALL) {
-                queueIndex = if (queueIndex > 0) queueIndex - 1 else playlist.size - 1
-            } else if (mediaSession.controller.repeatMode == PlaybackStateCompat.REPEAT_MODE_NONE) {
-                queueIndex = if (queueIndex > 0) queueIndex - 1 else 0
-            }
-            // REPEAT_MODE_ONE: nothing happens, don't change the queueIndex
-
-            if (player.isPlaying) {
-                onPlay()
-            } else {
-                onPrepare()
-            }*/
         }
 
         override fun onSeekTo(pos: Long) {
@@ -200,30 +129,26 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
         }
 
         override fun onSetShuffleMode(shuffleMode: Int) {
+            player.setShuffleMode(shuffleMode)
             mediaSession.setShuffleMode(shuffleMode)
-            if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
-                sortedPlaylist.clear()
-                sortedPlaylist.addAll(playlist)
-                val thisSong = playlist[queueIndex]
-                playlist.remove(thisSong)
-                playlist.shuffle()
-                playlist.add(queueIndex, thisSong)
-            } else if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
-                val thisSongIndex = sortedPlaylist.indexOf(playlist[queueIndex])
-                playlist.clear()
-                playlist.addAll(sortedPlaylist)
-                queueIndex = thisSongIndex
-            }
         }
 
         override fun onSetRepeatMode(repeatMode: Int) {
+            player.setRepeatMode(repeatMode)
             mediaSession.setRepeatMode(repeatMode)
         }
 
         override fun onSkipToQueueItem(id: Long) {
-            super.onSkipToQueueItem(id)
             player.skipToQueueItem(playlist.indexOf(playlist.first { it.description.mediaId?.toLong() == id }))
-            //queueIndex = playlist.indexOf(playlist.first { it.description.mediaId?.toLong() == id })
+        }
+
+        override fun onCustomAction(action: String?, extras: Bundle?) {
+            when (action) {
+                CLEAR_LIST_ACTION -> {
+                    playlist.clear()
+                    player.clearItems()
+                }
+            }
         }
     }
 
@@ -321,7 +246,8 @@ class MusicPlayerService : MediaBrowserServiceCompat() {
     }
 
     companion object {
-        const val notificationAction = "notificationAction"
+        const val NOTIFICATION_ACTION = "NOTIFICATION_ACTION"
+        const val CLEAR_LIST_ACTION = "CLEAR_LIST"
         const val argNotificationConfig = "notificationConfig"
     }
 

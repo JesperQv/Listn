@@ -17,3 +17,11 @@ fun List<Track>.toMediaMetadata(imageCache: ImageCache): List<MediaMetadataCompa
                 .build()
     }
 }
+
+fun List<MediaMetadataCompat>.isSameTracks(tracks: List<Track>): Boolean {
+    val list1 = mutableListOf<String?>()
+    forEach { list1.add(it.description.mediaId) }
+    val list2 = mutableListOf<String?>()
+    tracks.forEach { list2.add(it.id.toString()) }
+    return list1.containsAll(list2)
+}
