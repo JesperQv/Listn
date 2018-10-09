@@ -211,10 +211,7 @@ fun MediaMetadataCompat.toMediaSource(dataSourceFactory: DataSource.Factory) =
  * Extension method for building a [ConcatenatingMediaSource] given a [List]
  * of [MediaMetadataCompat] objects.
  */
-fun List<MediaMetadataCompat>.toMediaSource(
-        dataSourceFactory: DataSource.Factory
-): ConcatenatingMediaSource {
-
+fun List<MediaMetadataCompat>.toMediaSource(dataSourceFactory: DataSource.Factory): ConcatenatingMediaSource {
     val concatenatingMediaSource = ConcatenatingMediaSource()
     forEach {
         concatenatingMediaSource.addMediaSource(it.toMediaSource(dataSourceFactory))

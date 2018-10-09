@@ -18,6 +18,7 @@ class ListnPlaybackPreparer(private val player: MyPlayer,
 
     override fun onPrepareFromMediaId(mediaId: String?, extras: Bundle?) {
         StreamingMusicPlayer.playerResources()
+        //TODO seek to start index
         player.prepare(StreamingMusicPlayer.playlist.toMediaSource(dataSourceFactory))
     }
 

@@ -7,6 +7,8 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import com.jesperqvarfordt.listn.device.casttest.PlayerService
+import com.jesperqvarfordt.listn.device.casttest.id
 import com.jesperqvarfordt.listn.device.imagecache.ImageCache
 import com.jesperqvarfordt.listn.device.isSameTracks
 import com.jesperqvarfordt.listn.device.service.MusicPlayerService
@@ -147,7 +149,7 @@ constructor(private val context: Context,
 
     private fun connectMediaBrowser() {
         mediaBrowser = MediaBrowserCompat(context,
-                ComponentName(context, MusicPlayerService::class.java)
+                ComponentName(context, PlayerService::class.java)
                 , mediaBrowserConnectionCallback,
                 null)
         mediaBrowser?.connect()
@@ -180,8 +182,7 @@ constructor(private val context: Context,
 
         override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
             super.onChildrenLoaded(parentId, children)
-            mediaController.transportControls.clearPlaylist()
-            children.onEach { mediaController.addQueueItem(it.description) }
+            mediaController.transportControls.playFromMediaId(playlist[0].id, null)
 
             if (mediaController.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
                 mediaController.transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
@@ -215,8 +216,8 @@ constructor(private val context: Context,
             super.onMetadataChanged(metadata)
             val id = metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)?.toInt() ?: 0
             val title = metadata?.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
-            val artist = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
-            val coverUrl = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI)
+            val artist = metadata?.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE)
+            val coverUrl = metadata?.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI)
             val durationInMs = metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION) ?: 0
             mediaInfoObservable as BehaviorSubject<MediaInfo>
             mediaInfoObservable.onNext(MediaInfo(id, title, artist, coverUrl, durationInMs.toInt()))

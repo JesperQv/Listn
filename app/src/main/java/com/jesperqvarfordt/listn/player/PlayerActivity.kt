@@ -48,17 +48,17 @@ class PlayerActivity : AppCompatActivity(), PlayerContract.View {
     }
 
     private fun setUpListeners() {
-        playPause.setOnClickListener({
+        playPause.setOnClickListener {
             presenter.playPauseClicked()
-        })
+        }
 
-        next.setOnClickListener({
+        next.setOnClickListener {
             presenter.skipForwardClicked()
-        })
+        }
 
-        previous.setOnClickListener({
+        previous.setOnClickListener {
             presenter.skipBackwardsClicked()
-        })
+        }
     }
 
     override fun updateUi(data: CombinedInfo) {

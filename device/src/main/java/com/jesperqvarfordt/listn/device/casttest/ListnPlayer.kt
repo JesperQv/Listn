@@ -19,7 +19,7 @@ class ListnPlayer(context: Context, private val listener: StateChangedListener) 
     }
 
     private val exoPlayer = ExoPlayerFactory.newSimpleInstance(context, DefaultTrackSelector())
-    private val castPlayer = CastPlayer(CastContext.getSharedInstance())
+    //private val castPlayer = CastPlayer(CastContext.getSharedInstance())
 
     private var currentPlayer: Player = exoPlayer
 
@@ -47,7 +47,7 @@ class ListnPlayer(context: Context, private val listener: StateChangedListener) 
     }
 
     override fun onCastSessionAvailable() {
-        setCurrentPlayer(castPlayer)
+        //setCurrentPlayer(castPlayer)
     }
 
     override fun onCastSessionUnavailable() {

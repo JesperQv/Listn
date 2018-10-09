@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.jesperqvarfordt.listn">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -12,7 +13,8 @@
         android:icon="@mipmap/listn_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
@@ -43,13 +45,22 @@
         </activity>
 
         <service
-            android:name="com.jesperqvarfordt.listn.device.service.MusicPlayerService"
+            android:name="com.jesperqvarfordt.listn.device.casttest.PlayerService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
+
+        <!--<service
+            android:name="com.jesperqvarfordt.listn.device.service.MusicPlayerService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>-->
 
         <receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
             <intent-filter>
