@@ -7,8 +7,11 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import com.jesperqvarfordt.listn.device.casttest.PlayerService
-import com.jesperqvarfordt.listn.device.casttest.id
+import com.jesperqvarfordt.listn.device.casttest.*
+import com.jesperqvarfordt.listn.device.extensions.playbackStateToRepeatMode
+import com.jesperqvarfordt.listn.device.extensions.playbackStateToShuffleMode
+import com.jesperqvarfordt.listn.device.extensions.toPlaybackStateRepeatMode
+import com.jesperqvarfordt.listn.device.extensions.toPlaybackStateShuffleMode
 import com.jesperqvarfordt.listn.device.imagecache.ImageCache
 import com.jesperqvarfordt.listn.device.isSameTracks
 import com.jesperqvarfordt.listn.device.service.MusicPlayerService
@@ -20,7 +23,6 @@ import com.jesperqvarfordt.listn.domain.model.player.RepeatMode
 import com.jesperqvarfordt.listn.domain.model.player.ShuffleMode
 import com.jesperqvarfordt.listn.domain.player.MusicPlayer
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 
@@ -38,8 +40,8 @@ constructor(private val context: Context,
     private var playWhenReady = false
     private var startPlayingId = 0
 
-    override val playerInfoObservable: Observable<PlayerInfo> = BehaviorSubject.create<PlayerInfo>()
-    override val mediaInfoObservable: Observable<MediaInfo> = BehaviorSubject.create<MediaInfo>()
+    override val playerInfoObservable: BehaviorSubject<PlayerInfo> = BehaviorSubject.create<PlayerInfo>()
+    override val mediaInfoObservable: BehaviorSubject<MediaInfo> = BehaviorSubject.create<MediaInfo>()
 
     private val disposables = CompositeDisposable()
 
@@ -105,19 +107,12 @@ constructor(private val context: Context,
     }
 
     override fun repeat(repeatMode: RepeatMode): Completable {
-        mediaController.transportControls.setRepeatMode(when (repeatMode) {
-            RepeatMode.REPEAT_ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
-            RepeatMode.REPEAT_ONE -> PlaybackStateCompat.REPEAT_MODE_ONE
-            RepeatMode.REPEAT_NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
-        })
+        mediaController.transportControls.setRepeatMode(repeatMode.toPlaybackStateRepeatMode())
         return Completable.complete()
     }
 
     override fun shuffle(shuffleMode: ShuffleMode): Completable {
-        mediaController.transportControls.setShuffleMode(when (shuffleMode) {
-            ShuffleMode.SHUFFLE_ALL -> PlaybackStateCompat.SHUFFLE_MODE_ALL
-            ShuffleMode.SHUFFLE_NONE -> PlaybackStateCompat.SHUFFLE_MODE_NONE
-        })
+        mediaController.transportControls.setShuffleMode(shuffleMode.toPlaybackStateShuffleMode())
         return Completable.complete()
     }
 
@@ -182,18 +177,17 @@ constructor(private val context: Context,
 
         override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
             super.onChildrenLoaded(parentId, children)
-            mediaController.transportControls.playFromMediaId(playlist[0].id, null)
-
-            if (mediaController.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
-                mediaController.transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
-            }
-
-            mediaController.transportControls.prepare()
-            mediaController.transportControls.skipToQueueItem(startPlayingId.toLong())
-
-            if (playWhenReady) {
-                mediaController.transportControls.play()
-                playWhenReady = false
+            mediaController.apply {
+                transportControls.playFromMediaId(playlist[0].id, null)
+                if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+                    transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
+                    transportControls.prepare()
+                    transportControls.skipToQueueItem(startPlayingId.toLong())
+                }
+                if (playWhenReady) {
+                    transportControls.play()
+                    playWhenReady = false
+                }
             }
         }
     }
@@ -205,56 +199,34 @@ constructor(private val context: Context,
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             super.onPlaybackStateChanged(state)
             isPlaying = state != null && state.state == PlaybackStateCompat.STATE_PLAYING
-            val progress = state?.position?.toInt() ?: 0
-            val shuffle = getShuffleMode(mediaController.shuffleMode)
-            val repeat = getRepeatMode(mediaController.repeatMode)
-            playerInfoObservable as BehaviorSubject<PlayerInfo>
-            playerInfoObservable.onNext(PlayerInfo(isPlaying, progress, shuffle, repeat))
+            playerInfoObservable.onNext(PlayerInfo(isPlaying,
+                    state?.position?.toInt() ?: 0,
+                    mediaController.shuffleMode.playbackStateToShuffleMode(),
+                    mediaController.repeatMode.playbackStateToRepeatMode()))
         }
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             super.onMetadataChanged(metadata)
-            val id = metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)?.toInt() ?: 0
-            val title = metadata?.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
-            val artist = metadata?.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE)
-            val coverUrl = metadata?.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI)
-            val durationInMs = metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION) ?: 0
-            mediaInfoObservable as BehaviorSubject<MediaInfo>
-            mediaInfoObservable.onNext(MediaInfo(id, title, artist, coverUrl, durationInMs.toInt()))
+            mediaInfoObservable.onNext(MediaInfo(metadata?.id?.toInt() ?: 0,
+                    metadata?.title,
+                    metadata?.displaySubtitle,
+                    metadata?.displayIconUri.toString(),
+                    metadata?.duration?.toInt() ?: 0))
         }
 
         override fun onShuffleModeChanged(shuffleMode: Int) {
             super.onShuffleModeChanged(shuffleMode)
-            val progress = mediaController.playbackState?.position?.toInt() ?: 0
-            val shuffle = getShuffleMode(shuffleMode)
-            val repeat = getRepeatMode(mediaController.repeatMode)
-            playerInfoObservable as BehaviorSubject<PlayerInfo>
-            playerInfoObservable.onNext(PlayerInfo(isPlaying, progress, shuffle, repeat))
+            playerInfoObservable.onNext(PlayerInfo(isPlaying,
+                    mediaController.playbackState?.position?.toInt() ?: 0,
+                    mediaController.shuffleMode.playbackStateToShuffleMode(),
+                    mediaController.repeatMode.playbackStateToRepeatMode()))
         }
 
         override fun onRepeatModeChanged(repeatMode: Int) {
             super.onRepeatModeChanged(repeatMode)
-            val progress = mediaController.playbackState?.position?.toInt() ?: 0
-            val shuffle = getShuffleMode(mediaController.shuffleMode)
-            val repeat = getRepeatMode(repeatMode)
-            playerInfoObservable as BehaviorSubject<PlayerInfo>
-            playerInfoObservable.onNext(PlayerInfo(isPlaying, progress, shuffle, repeat))
-        }
-
-        // TODO these shouldbe extension functions
-        private fun getShuffleMode(shuffleMode: Int): ShuffleMode {
-            return when (shuffleMode) {
-                PlaybackStateCompat.SHUFFLE_MODE_ALL -> ShuffleMode.SHUFFLE_ALL
-                else -> ShuffleMode.SHUFFLE_NONE
-            }
-        }
-
-        private fun getRepeatMode(repeatMode: Int): RepeatMode {
-            return when (repeatMode) {
-                PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.REPEAT_ONE
-                PlaybackStateCompat.REPEAT_MODE_NONE -> RepeatMode.REPEAT_NONE
-                else -> RepeatMode.REPEAT_ALL
-            }
+            playerInfoObservable.onNext(PlayerInfo(isPlaying, mediaController.playbackState?.position?.toInt() ?: 0,
+                    mediaController.shuffleMode.playbackStateToShuffleMode(),
+                    mediaController.repeatMode.playbackStateToRepeatMode()))
         }
     }
 }

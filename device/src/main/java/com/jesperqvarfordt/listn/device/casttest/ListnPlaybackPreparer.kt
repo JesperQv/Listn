@@ -3,13 +3,14 @@ package com.jesperqvarfordt.listn.device.casttest
 import android.net.Uri
 import android.os.Bundle
 import android.os.ResultReceiver
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.DataSource
 import com.jesperqvarfordt.listn.device.player.StreamingMusicPlayer
 
-class ListnPlaybackPreparer(private val player: MyPlayer,
+class ListnPlaybackPreparer(private val player: ExtendedPlayer,
                             private val dataSourceFactory: DataSource.Factory) : MediaSessionConnector.PlaybackPreparer {
 
     override fun getSupportedPrepareActions(): Long =
@@ -17,9 +18,12 @@ class ListnPlaybackPreparer(private val player: MyPlayer,
                     PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
 
     override fun onPrepareFromMediaId(mediaId: String?, extras: Bundle?) {
-        StreamingMusicPlayer.playerResources()
-        //TODO seek to start index
+        val itemToPlay: MediaMetadataCompat? = StreamingMusicPlayer.playlist.find { item ->
+            item.id == mediaId
+        }
         player.prepare(StreamingMusicPlayer.playlist.toMediaSource(dataSourceFactory))
+        val index = StreamingMusicPlayer.playlist.indexOf(itemToPlay)
+        player.seekTo(index, 0)
     }
 
     override fun onPrepareFromSearch(query: String?, extras: Bundle?) = Unit

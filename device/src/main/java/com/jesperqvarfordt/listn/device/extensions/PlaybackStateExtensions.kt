@@ -2,12 +2,20 @@ package com.jesperqvarfordt.listn.device.extensions
 
 import android.support.v4.media.session.PlaybackStateCompat
 import com.jesperqvarfordt.listn.domain.model.player.RepeatMode
+import com.jesperqvarfordt.listn.domain.model.player.ShuffleMode
 
-fun Int.playbackStateToDomainRepeatMode(): RepeatMode {
+fun Int.playbackStateToRepeatMode(): RepeatMode {
     return when (this) {
         PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.REPEAT_ONE
         PlaybackStateCompat.REPEAT_MODE_NONE -> RepeatMode.REPEAT_NONE
         else -> RepeatMode.REPEAT_ALL
+    }
+}
+
+fun Int.playbackStateToShuffleMode(): ShuffleMode {
+    return when (this) {
+        PlaybackStateCompat.SHUFFLE_MODE_ALL -> ShuffleMode.SHUFFLE_ALL
+        else -> ShuffleMode.SHUFFLE_NONE
     }
 }
 

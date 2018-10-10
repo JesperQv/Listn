@@ -14,16 +14,18 @@ import com.jesperqvarfordt.listn.device.extensions.playbackStateToAvailableActio
 import com.jesperqvarfordt.listn.device.extensions.playerStateToPlaybackStateCompat
 import com.jesperqvarfordt.listn.device.player.StreamingMusicPlayer
 
-class PlayerService: MediaBrowserServiceCompat(), ListnPlayer.StateChangedListener {
+class PlayerService: MediaBrowserServiceCompat() {
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaSessionConnector: MediaSessionConnector
 
-    private lateinit var player: MyPlayer
+    private lateinit var player: ExtendedPlayer
 
     override fun onCreate() {
         super.onCreate()
-        player = ListnPlayer(applicationContext, this)
+        player = ListnPlayer(applicationContext, stateChanged = {playWhenReady, playbackState ->
+            onStateChange(playWhenReady, playbackState)
+        })
         mediaSession = MediaSessionCompat(applicationContext, "ListnMediaSession")
 
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
@@ -42,7 +44,10 @@ class PlayerService: MediaBrowserServiceCompat(), ListnPlayer.StateChangedListen
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaSession.release()
+        mediaSession.apply {
+            isActive = false
+            release()
+        }
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
@@ -53,8 +58,8 @@ class PlayerService: MediaBrowserServiceCompat(), ListnPlayer.StateChangedListen
         return BrowserRoot(getString(R.string.app_name), null)
     }
 
-    override fun onStateChange(playWhenReady: Boolean, playbackState: Int) {
-        val state = playbackState.playerStateToPlaybackStateCompat(player)
+    private fun onStateChange(playWhenReady: Boolean, playbackState: Int) {
+        val state = playbackState.playerStateToPlaybackStateCompat(playWhenReady)
         val result = PlaybackStateCompat.Builder()
                 .setActions(state.playbackStateToAvailableActions())
                 .setState(state, player.currentPosition, 1.0f, SystemClock.elapsedRealtime())

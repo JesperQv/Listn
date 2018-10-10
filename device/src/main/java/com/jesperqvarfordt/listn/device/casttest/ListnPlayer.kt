@@ -9,14 +9,10 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.gms.cast.framework.CastContext
 
-class ListnPlayer(context: Context, private val listener: StateChangedListener) :
-        MyPlayer, CastPlayer.SessionAvailabilityListener {
-
-    interface StateChangedListener {
-        fun onStateChange(playWhenReady: Boolean, playbackState: Int)
-    }
+class ListnPlayer(context: Context,
+                  private val stateChanged: (playWhenReady: Boolean, playbackState: Int) -> Unit) :
+        ExtendedPlayer, CastPlayer.SessionAvailabilityListener {
 
     private val exoPlayer = ExoPlayerFactory.newSimpleInstance(context, DefaultTrackSelector())
     //private val castPlayer = CastPlayer(CastContext.getSharedInstance())
@@ -25,9 +21,13 @@ class ListnPlayer(context: Context, private val listener: StateChangedListener) 
 
     private val handler = Handler()
 
+    init {
+        //TODO make sure we add audio attributes for focus changes
+    }
+
     private val tickRunnable = Runnable {
         run {
-            listener.onStateChange(currentPlayer.playWhenReady, currentPlayer.playbackState)
+            stateChanged.invoke(currentPlayer.playWhenReady, currentPlayer.playbackState)
             postTick()
         }
     }
