@@ -10,11 +10,3 @@ fun RepeatMode.toPlaybackStateRepeatMode(): Int {
         RepeatMode.REPEAT_NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
     }
 }
-
-fun Int.toDomainRepeatMode(): RepeatMode {
-    return when (this) {
-        PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.REPEAT_ONE
-        PlaybackStateCompat.REPEAT_MODE_NONE -> RepeatMode.REPEAT_NONE
-        else -> RepeatMode.REPEAT_ALL
-    }
-}
