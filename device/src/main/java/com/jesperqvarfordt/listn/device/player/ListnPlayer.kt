@@ -1,4 +1,4 @@
-package com.jesperqvarfordt.listn.device.casttest
+package com.jesperqvarfordt.listn.device.player
 
 import android.content.Context
 import android.os.Handler
@@ -11,23 +11,24 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 
 class ListnPlayer(context: Context,
-                  private val stateChanged: (playWhenReady: Boolean, playbackState: Int) -> Unit) :
+                  private val stateChanged: (playWhenReady: Boolean, currentPos: Long, playbackState: Int) -> Unit) :
         ExtendedPlayer, CastPlayer.SessionAvailabilityListener {
 
     private val exoPlayer = ExoPlayerFactory.newSimpleInstance(context, DefaultTrackSelector())
     //private val castPlayer = CastPlayer(CastContext.getSharedInstance())
 
-    private var currentPlayer: Player = exoPlayer
+    private lateinit var currentPlayer: Player
 
     private val handler = Handler()
 
     init {
         //TODO make sure we add audio attributes for focus changes
+        setCurrentPlayer(exoPlayer)
     }
 
     private val tickRunnable = Runnable {
         run {
-            stateChanged.invoke(currentPlayer.playWhenReady, currentPlayer.playbackState)
+            stateChanged.invoke(currentPlayer.playWhenReady, currentPlayer.currentPosition, currentPlayer.playbackState)
             postTick()
         }
     }
@@ -44,6 +45,11 @@ class ListnPlayer(context: Context,
 
     private fun setCurrentPlayer(newPlayer: Player) {
         currentPlayer = newPlayer
+        currentPlayer.addListener(object : Player.EventListener {
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                stateChanged.invoke(playWhenReady, currentPlayer.currentPosition, playbackState)
+            }
+        })
     }
 
     override fun onCastSessionAvailable() {
@@ -254,4 +260,5 @@ class ListnPlayer(context: Context,
     override fun getPreviousWindowIndex(): Int {
         return currentPlayer.previousWindowIndex
     }
+
 }

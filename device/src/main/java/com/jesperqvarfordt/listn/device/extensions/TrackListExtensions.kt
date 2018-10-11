@@ -1,4 +1,4 @@
-package com.jesperqvarfordt.listn.device
+package com.jesperqvarfordt.listn.device.extensions
 
 import android.support.v4.media.MediaMetadataCompat
 import com.jesperqvarfordt.listn.device.imagecache.ImageCache
@@ -16,12 +16,4 @@ fun List<Track>.toMediaMetadata(imageCache: ImageCache): List<MediaMetadataCompa
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, it.durationInMs)
                 .build()
     }
-}
-
-fun List<MediaMetadataCompat>.isSameTracks(tracks: List<Track>): Boolean {
-    val list1 = mutableListOf<String?>()
-    forEach { list1.add(it.description.mediaId) }
-    val list2 = mutableListOf<String?>()
-    tracks.forEach { list2.add(it.id.toString()) }
-    return list1.containsAll(list2)
 }

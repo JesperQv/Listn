@@ -1,4 +1,4 @@
-package com.jesperqvarfordt.listn.device.casttest
+package com.jesperqvarfordt.listn.device.player
 
 import android.net.Uri
 import android.os.Bundle
@@ -8,10 +8,11 @@ import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.DataSource
-import com.jesperqvarfordt.listn.device.player.StreamingMusicPlayer
+import com.jesperqvarfordt.listn.device.extensions.id
+import com.jesperqvarfordt.listn.device.extensions.toMediaSource
 
-class ListnPlaybackPreparer(private val player: ExtendedPlayer,
-                            private val dataSourceFactory: DataSource.Factory) : MediaSessionConnector.PlaybackPreparer {
+class ExtendedPlaybackPreparer(private val player: ExtendedPlayer,
+                               private val dataSourceFactory: DataSource.Factory) : MediaSessionConnector.PlaybackPreparer {
 
     override fun getSupportedPrepareActions(): Long =
             PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or

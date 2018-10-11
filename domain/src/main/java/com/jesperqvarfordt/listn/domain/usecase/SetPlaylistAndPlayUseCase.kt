@@ -10,7 +10,7 @@ class SetPlaylistAndPlayUseCase(private val player: MusicPlayer,
                                 executionScheduler: Scheduler,
                                 uiScheduler: Scheduler) : UseCase(executionScheduler, uiScheduler) {
 
-    fun execute(playlist: List<Track>, startPlayingId: Int): Completable = player.setPlaylistAndPlay(playlist, startPlayingId)
+    fun execute(playlist: List<Track>, startPlayingIndex: Int): Completable = player.setPlaylistAndPlay(playlist, startPlayingIndex)
             .subscribeOn(executionScheduler)
             .observeOn(uiScheduler)
 }

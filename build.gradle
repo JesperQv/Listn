@@ -69,6 +69,9 @@ ext {
     // Dagger
     daggerVersion = '2.9'
 
+    // Cast
+    castFrameworkVersion = '16.0.1'
+
     // Image Loading
     picassoVersion = '2.71828'
     picassoTransformationsVersion = '2.2.1'

@@ -29,6 +29,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "CAST_APP_ID", getMyApiKey("castAppId")
+        }
+
         release {
             signingConfig signingConfigs.release
             debuggable false
@@ -75,6 +79,9 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$rootPath.okhttpVersion"
     implementation "com.squareup.okhttp3:okhttp:$rootPath.okhttpVersion"
 
+    implementation "com.android.support:mediarouter-v7:$rootPath.supportLibraryVersion"
+    implementation "com.google.android.gms:play-services-cast-framework:$rootPath.castFrameworkVersion"
+
     implementation "io.reactivex.rxjava2:rxandroid:$rootPath.rxAndroidVersion"
 
     implementation "com.google.dagger:dagger:$rootPath.daggerVersion"
@@ -96,6 +103,16 @@ dependencies {
     androidTestImplementation "com.android.support.test:runner:$rootPath.testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootPath.espressoVersion"
     testImplementation "org.mockito:mockito-core:$rootPath.mockitoVersion"
+}
+
+static def getMyApiKey(String property) {
+    Properties properties = new Properties()
+    try {
+        properties.load(new FileInputStream("api-keys.properties"))
+        return "\"" + properties.getProperty(property) + "\""
+    } catch (Exception ignored) {
+        return "\"" + "noApiKey" + "\""
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

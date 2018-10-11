@@ -65,8 +65,8 @@ constructor(private val search: SearchTracksUseCase,
                 }))
     }
 
-    override fun trackClicked(tracks: List<Track>, clickedId: Int) {
-        disposables.add(startPlayingPlaylist.execute(tracks, clickedId)
+    override fun trackClicked(tracks: List<Track>, clickedIndex: Int) {
+        disposables.add(startPlayingPlaylist.execute(tracks, clickedIndex)
                 .subscribe())
         view?.openMusicPlayer()
     }

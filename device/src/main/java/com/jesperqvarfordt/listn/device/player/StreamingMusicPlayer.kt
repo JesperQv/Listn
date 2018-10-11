@@ -7,15 +7,9 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import com.jesperqvarfordt.listn.device.casttest.*
-import com.jesperqvarfordt.listn.device.extensions.playbackStateToRepeatMode
-import com.jesperqvarfordt.listn.device.extensions.playbackStateToShuffleMode
-import com.jesperqvarfordt.listn.device.extensions.toPlaybackStateRepeatMode
-import com.jesperqvarfordt.listn.device.extensions.toPlaybackStateShuffleMode
+import com.jesperqvarfordt.listn.device.extensions.*
 import com.jesperqvarfordt.listn.device.imagecache.ImageCache
-import com.jesperqvarfordt.listn.device.isSameTracks
-import com.jesperqvarfordt.listn.device.service.MusicPlayerService
-import com.jesperqvarfordt.listn.device.toMediaMetadata
+import com.jesperqvarfordt.listn.device.service.PlayerService
 import com.jesperqvarfordt.listn.domain.model.Track
 import com.jesperqvarfordt.listn.domain.model.player.MediaInfo
 import com.jesperqvarfordt.listn.domain.model.player.PlayerInfo
@@ -38,7 +32,7 @@ constructor(private val context: Context,
     private lateinit var mediaController: MediaControllerCompat
     private val mediaControllerCallback = MediaControllerCallback()
     private var playWhenReady = false
-    private var startPlayingId = 0
+    private var startPlayingIndex = 0
 
     override val playerInfoObservable: BehaviorSubject<PlayerInfo> = BehaviorSubject.create<PlayerInfo>()
     override val mediaInfoObservable: BehaviorSubject<MediaInfo> = BehaviorSubject.create<MediaInfo>()
@@ -116,13 +110,8 @@ constructor(private val context: Context,
         return Completable.complete()
     }
 
-    override fun setPlaylistAndPlay(newPlaylist: List<Track>, startPlayingId: Int): Completable {
-        this.startPlayingId = startPlayingId
-        if (playlist.isSameTracks(newPlaylist)) {
-            mediaController.transportControls.skipToQueueItem(startPlayingId.toLong())
-            mediaController.transportControls.play()
-            return Completable.complete()
-        }
+    override fun setPlaylistAndPlay(newPlaylist: List<Track>, startPlayingIndex: Int): Completable {
+        this.startPlayingIndex = startPlayingIndex
         playlist = newPlaylist.toMediaMetadata(imageCache)
         playWhenReady = true
         if (mediaBrowser == null || !mediaBrowser!!.isConnected) {
@@ -153,8 +142,8 @@ constructor(private val context: Context,
 
     private fun updateNotification() {
         val bundle = Bundle()
-        bundle.putParcelable(MusicPlayerService.argNotificationConfig, notificationConfig)
-        mediaBrowser?.sendCustomAction(MusicPlayerService.NOTIFICATION_ACTION, bundle, null)
+        bundle.putParcelable(PlayerService.argNotificationConfig, notificationConfig)
+        mediaBrowser?.sendCustomAction(PlayerService.NOTIFICATION_ACTION, bundle, null)
     }
 
     inner class MediaBrowserConnectionCallback : MediaBrowserCompat.ConnectionCallback() {
@@ -178,11 +167,10 @@ constructor(private val context: Context,
         override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
             super.onChildrenLoaded(parentId, children)
             mediaController.apply {
-                transportControls.playFromMediaId(playlist[0].id, null)
+                transportControls.playFromMediaId(playlist[startPlayingIndex].id, null)
                 if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
                     transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
                     transportControls.prepare()
-                    transportControls.skipToQueueItem(startPlayingId.toLong())
                 }
                 if (playWhenReady) {
                     transportControls.play()

@@ -27,8 +27,8 @@ import javax.inject.Inject
 class ExploreFragment : Fragment(),
         ExploreContract.View {
 
-    private val tracksAdapter = TracksAdapter(trackClicked = { tracks, id ->
-        presenter.trackClicked(tracks, id)
+    private val tracksAdapter = TracksAdapter(trackClicked = { tracks, index ->
+        presenter.trackClicked(tracks, index)
     })
 
     private val chartsAdapter = ChartsAdapter(chartClicked = { chart ->
@@ -53,9 +53,9 @@ class ExploreFragment : Fragment(),
         root.chartList.layoutManager = GridLayoutManager(activity, 2)
         root.chartList.adapter = chartsAdapter
 
-        root.searchButton.setOnClickListener({
+        root.searchButton.setOnClickListener {
             performSearch(root.searchBar.text.toString())
-        })
+        }
 
         root.searchBar.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {

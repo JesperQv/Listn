@@ -1,9 +1,7 @@
-package com.jesperqvarfordt.listn.device.casttest
+package com.jesperqvarfordt.listn.device.extensions
 
 import android.graphics.Bitmap
 import android.net.Uri
-import android.support.v4.media.MediaBrowserCompat.MediaItem
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -67,10 +65,10 @@ inline val MediaMetadataCompat.displayDescription
 inline val MediaMetadataCompat.displayIcon
     get() = getBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON)
 
-inline val MediaMetadataCompat.displayIconUri
+inline val MediaMetadataCompat.displayIconUri: Uri
     get() = Uri.parse(this.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI))
 
-inline val MediaMetadataCompat.mediaUri
+inline val MediaMetadataCompat.mediaUri: Uri
     get() = Uri.parse(this.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI))
 
 inline val MediaMetadataCompat.downloadStatus
@@ -197,20 +195,11 @@ inline val MediaMetadataCompat.fullDescription
             it.extras?.putAll(bundle)
         }
 
-/**
- * Extension method for building an [ExtractorMediaSource] from a [MediaMetadataCompat] object.
- *
- * For convenience, place the [MediaDescriptionCompat] into the tag so it can be retrieved later.
- */
 fun MediaMetadataCompat.toMediaSource(dataSourceFactory: DataSource.Factory) =
         ExtractorMediaSource.Factory(dataSourceFactory)
                 .setTag(fullDescription)
                 .createMediaSource(mediaUri)
 
-/**
- * Extension method for building a [ConcatenatingMediaSource] given a [List]
- * of [MediaMetadataCompat] objects.
- */
 fun List<MediaMetadataCompat>.toMediaSource(dataSourceFactory: DataSource.Factory): ConcatenatingMediaSource {
     val concatenatingMediaSource = ConcatenatingMediaSource()
     forEach {

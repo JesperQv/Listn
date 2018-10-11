@@ -22,7 +22,7 @@ interface ExploreContract {
 
     interface Presenter: BasePresenter<View> {
         fun searchClicked(query: String)
-        fun trackClicked(tracks: List<Track>, clickedId: Int)
+        fun trackClicked(tracks: List<Track>, clickedIndex: Int)
         fun chartClicked(chart: Chart)
         fun backClicked()
     }
