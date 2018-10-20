@@ -9,21 +9,24 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.gms.cast.framework.CastContext
 
 class ListnPlayer(context: Context,
                   private val stateChanged: (playWhenReady: Boolean, currentPos: Long, playbackState: Int) -> Unit) :
         ExtendedPlayer, CastPlayer.SessionAvailabilityListener {
 
     private val exoPlayer = ExoPlayerFactory.newSimpleInstance(context, DefaultTrackSelector())
-    //private val castPlayer = CastPlayer(CastContext.getSharedInstance())
+    private val castPlayer = CastPlayer(CastContext.getSharedInstance())
 
     private lateinit var currentPlayer: Player
 
     private val handler = Handler()
 
     init {
+        currentPlayer = exoPlayer
         //TODO make sure we add audio attributes for focus changes
-        setCurrentPlayer(exoPlayer)
+        //setCurrentPlayer(exoPlayer)
+        castPlayer.setSessionAvailabilityListener(this)
     }
 
     private val tickRunnable = Runnable {
@@ -39,8 +42,11 @@ class ListnPlayer(context: Context,
     }
 
     override fun prepare(mediaSource: MediaSource) {
-        //TODO support castPlayer aswell
-        exoPlayer.prepare(mediaSource)
+        if (currentPlayer == exoPlayer) {
+            exoPlayer.prepare(mediaSource)
+        } else {
+
+        }
     }
 
     private fun setCurrentPlayer(newPlayer: Player) {

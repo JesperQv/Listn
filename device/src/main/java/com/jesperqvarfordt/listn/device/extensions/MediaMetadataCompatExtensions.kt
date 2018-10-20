@@ -6,6 +6,10 @@ import android.support.v4.media.MediaMetadataCompat
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.util.MimeTypes
+import com.google.android.gms.cast.MediaInfo
+import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.MediaQueueItem
 
 inline val MediaMetadataCompat.id get() = getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
 
@@ -207,3 +211,18 @@ fun List<MediaMetadataCompat>.toMediaSource(dataSourceFactory: DataSource.Factor
     }
     return concatenatingMediaSource
 }
+
+fun List<MediaMetadataCompat>.toMediaQueueItems(): List<MediaQueueItem> = this.map { it.toMediaQueueItem() }
+
+fun MediaMetadataCompat.toMediaQueueItem(): MediaQueueItem {
+    val metadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK).also {
+        it.putString(MediaMetadata.KEY_TITLE, this.title)
+        it.putString(MediaMetadata.KEY_ARTIST, this.artist)
+    }
+    val mediaInfo = MediaInfo.Builder(this.mediaUri.toString())
+            .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED).setContentType(MimeTypes.AUDIO_UNKNOWN)
+            .setMetadata(metadata).build()
+    return MediaQueueItem.Builder(mediaInfo).build()
+}
+
+
