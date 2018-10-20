@@ -9,9 +9,10 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.DataSource
 import com.jesperqvarfordt.listn.device.extensions.id
+import com.jesperqvarfordt.listn.device.extensions.toMediaQueueItems
 import com.jesperqvarfordt.listn.device.extensions.toMediaSource
 
-class ExtendedPlaybackPreparer(private val player: ExtendedPlayer,
+class ExtendedPlaybackPreparer(private val player: CastExtendedPlayer,
                                private val dataSourceFactory: DataSource.Factory) : MediaSessionConnector.PlaybackPreparer {
 
     override fun getSupportedPrepareActions(): Long =
@@ -22,7 +23,9 @@ class ExtendedPlaybackPreparer(private val player: ExtendedPlayer,
         val itemToPlay: MediaMetadataCompat? = StreamingMusicPlayer.playlist.find { item ->
             item.id == mediaId
         }
-        player.prepare(StreamingMusicPlayer.playlist.toMediaSource(dataSourceFactory))
+        player.prepare(StreamingMusicPlayer.playlist.toMediaSource(dataSourceFactory),
+                StreamingMusicPlayer.playlist.toMediaQueueItems())
+
         val index = StreamingMusicPlayer.playlist.indexOf(itemToPlay)
         player.seekTo(index, 0)
     }

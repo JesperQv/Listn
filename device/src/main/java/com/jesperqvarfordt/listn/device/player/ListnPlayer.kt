@@ -9,16 +9,17 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.framework.CastContext
 
 class ListnPlayer(context: Context,
                   private val stateChanged: (playWhenReady: Boolean, currentPos: Long, playbackState: Int) -> Unit) :
-        ExtendedPlayer, CastPlayer.SessionAvailabilityListener {
+        CastExtendedPlayer, CastPlayer.SessionAvailabilityListener {
 
     private val exoPlayer = ExoPlayerFactory.newSimpleInstance(context, DefaultTrackSelector())
     private val castPlayer = CastPlayer(CastContext.getSharedInstance())
 
-    private lateinit var currentPlayer: Player
+    private var currentPlayer: Player
 
     private val handler = Handler()
 
@@ -41,11 +42,12 @@ class ListnPlayer(context: Context,
         handler.postDelayed(tickRunnable, 1000)
     }
 
-    override fun prepare(mediaSource: MediaSource) {
+    override fun prepare(mediaSource: MediaSource, castSource: List<MediaQueueItem>) {
         if (currentPlayer == exoPlayer) {
             exoPlayer.prepare(mediaSource)
         } else {
-
+            exoPlayer.playWhenReady = false
+            castPlayer.loadItems(castSource.toTypedArray(), exoPlayer.currentWindowIndex, exoPlayer.currentPosition, exoPlayer.repeatMode)
         }
     }
 
@@ -59,7 +61,7 @@ class ListnPlayer(context: Context,
     }
 
     override fun onCastSessionAvailable() {
-        //setCurrentPlayer(castPlayer)
+        setCurrentPlayer(castPlayer)
     }
 
     override fun onCastSessionUnavailable() {

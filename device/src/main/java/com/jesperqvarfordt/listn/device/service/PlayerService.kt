@@ -26,7 +26,7 @@ class PlayerService : MediaBrowserServiceCompat() {
     private val mediaControllerCallback = MediaControllerCallback()
     private var mediaNotificationManager: MediaNotificationManager? = null
 
-    private lateinit var player: ExtendedPlayer
+    private lateinit var player: CastExtendedPlayer
 
     override fun onCreate() {
         super.onCreate()
