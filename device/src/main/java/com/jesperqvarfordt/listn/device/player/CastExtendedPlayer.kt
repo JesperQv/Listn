@@ -5,5 +5,5 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.gms.cast.MediaQueueItem
 
 interface CastExtendedPlayer: Player {
-    fun prepare(mediaSource: MediaSource, castSource: List<MediaQueueItem>)
+    fun prepare(mediaSource: MediaSource, castSource: Array<MediaQueueItem>)
 }

@@ -24,7 +24,7 @@ class ExtendedPlaybackPreparer(private val player: CastExtendedPlayer,
             item.id == mediaId
         }
         player.prepare(StreamingMusicPlayer.playlist.toMediaSource(dataSourceFactory),
-                StreamingMusicPlayer.playlist.toMediaQueueItems())
+                StreamingMusicPlayer.playlist.toMediaQueueItems().toTypedArray())
 
         val index = StreamingMusicPlayer.playlist.indexOf(itemToPlay)
         player.seekTo(index, 0)

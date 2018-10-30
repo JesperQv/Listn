@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.cast.CastPlayer
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -17,17 +18,19 @@ class ListnPlayer(context: Context,
         CastExtendedPlayer, CastPlayer.SessionAvailabilityListener {
 
     private val exoPlayer = ExoPlayerFactory.newSimpleInstance(context, DefaultTrackSelector())
-    private val castPlayer = CastPlayer(CastContext.getSharedInstance())
+    private val castPlayer = CastPlayer(CastContext.getSharedInstance(context))
 
-    private var currentPlayer: Player
+    private lateinit var currentPlayer: Player
+    private var currentItemIndex = C.INDEX_UNSET
+    private var preparedCastSource: Array<MediaQueueItem> = emptyArray()
+    private var preparedMediaSource: MediaSource? = null
 
     private val handler = Handler()
 
     init {
-        currentPlayer = exoPlayer
         //TODO make sure we add audio attributes for focus changes
-        //setCurrentPlayer(exoPlayer)
         castPlayer.setSessionAvailabilityListener(this)
+        setCurrentPlayer(if (castPlayer.isCastSessionAvailable) castPlayer else exoPlayer)
     }
 
     private val tickRunnable = Runnable {
@@ -42,22 +45,53 @@ class ListnPlayer(context: Context,
         handler.postDelayed(tickRunnable, 1000)
     }
 
-    override fun prepare(mediaSource: MediaSource, castSource: List<MediaQueueItem>) {
+    override fun prepare(mediaSource: MediaSource, castSource: Array<MediaQueueItem>) {
         if (currentPlayer == exoPlayer) {
-            exoPlayer.prepare(mediaSource)
+            preparedMediaSource = mediaSource
+            exoPlayer.prepare(preparedMediaSource)
         } else {
+            preparedCastSource = castSource
             exoPlayer.playWhenReady = false
-            castPlayer.loadItems(castSource.toTypedArray(), exoPlayer.currentWindowIndex, exoPlayer.currentPosition, exoPlayer.repeatMode)
+            castPlayer.loadItems(preparedCastSource, currentPlayer.currentWindowIndex, currentPlayer.currentPosition, currentPlayer.repeatMode)
         }
     }
 
     private fun setCurrentPlayer(newPlayer: Player) {
+        if (::currentPlayer.isInitialized && currentPlayer === newPlayer) {
+            return
+        }
+
+        var playbackPositionMs = C.TIME_UNSET
+        var windowIndex = C.INDEX_UNSET
+        var playWhenReady = false
+        if (::currentPlayer.isInitialized) {
+            val playbackState = currentPlayer.playbackState
+            if (playbackState != Player.STATE_ENDED) {
+                playbackPositionMs = currentPlayer.currentPosition
+                playWhenReady = currentPlayer.playWhenReady
+                windowIndex = currentPlayer.currentWindowIndex
+                if (windowIndex != currentItemIndex) {
+                    playbackPositionMs = C.TIME_UNSET
+                    windowIndex = currentItemIndex
+                }
+            }
+            this.currentPlayer.stop(true)
+        } else {
+            // This is the initial setup. No need to save any state.
+        }
+
         currentPlayer = newPlayer
         currentPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 stateChanged.invoke(playWhenReady, currentPlayer.currentPosition, playbackState)
             }
         })
+
+        if (windowIndex != C.INDEX_UNSET) {
+            prepare(preparedMediaSource ?: ConcatenatingMediaSource(), preparedCastSource)
+            //currentPlayer.seekTo(windowIndex, playbackPositionMs)
+            //currentPlayer.playWhenReady = playWhenReady
+        }
     }
 
     override fun onCastSessionAvailable() {
