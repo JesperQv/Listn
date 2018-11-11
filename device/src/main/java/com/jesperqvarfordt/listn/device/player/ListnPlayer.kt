@@ -45,14 +45,13 @@ class ListnPlayer(context: Context,
         handler.postDelayed(tickRunnable, 1000)
     }
 
-    override fun prepare(mediaSource: MediaSource, castSource: Array<MediaQueueItem>) {
+    override fun prepare(mediaSource: MediaSource, castSource: Array<MediaQueueItem>, windowIndex: Int, position: Long) {
+        preparedMediaSource = mediaSource
+        preparedCastSource = castSource
         if (currentPlayer == exoPlayer) {
-            preparedMediaSource = mediaSource
             exoPlayer.prepare(preparedMediaSource)
         } else {
-            preparedCastSource = castSource
-            exoPlayer.playWhenReady = false
-            castPlayer.loadItems(preparedCastSource, currentPlayer.currentWindowIndex, currentPlayer.currentPosition, currentPlayer.repeatMode)
+            castPlayer.loadItems(preparedCastSource, windowIndex, position, exoPlayer.repeatMode)
         }
     }
 
@@ -70,12 +69,12 @@ class ListnPlayer(context: Context,
                 playbackPositionMs = currentPlayer.currentPosition
                 playWhenReady = currentPlayer.playWhenReady
                 windowIndex = currentPlayer.currentWindowIndex
-                if (windowIndex != currentItemIndex) {
+                /*if (windowIndex != currentItemIndex) {
                     playbackPositionMs = C.TIME_UNSET
                     windowIndex = currentItemIndex
-                }
+                }*/
             }
-            this.currentPlayer.stop(true)
+            this.currentPlayer.stop(false)
         } else {
             // This is the initial setup. No need to save any state.
         }
@@ -88,9 +87,8 @@ class ListnPlayer(context: Context,
         })
 
         if (windowIndex != C.INDEX_UNSET) {
-            prepare(preparedMediaSource ?: ConcatenatingMediaSource(), preparedCastSource)
-            //currentPlayer.seekTo(windowIndex, playbackPositionMs)
-            //currentPlayer.playWhenReady = playWhenReady
+            prepare(preparedMediaSource ?: ConcatenatingMediaSource(), preparedCastSource, windowIndex, playbackPositionMs)
+            currentPlayer.playWhenReady = playWhenReady
         }
     }
 

@@ -219,13 +219,15 @@ fun MediaMetadataCompat.toMediaQueueItem(): MediaQueueItem {
     val metadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK).also {
         it.putString(MediaMetadata.KEY_TITLE, this.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
         it.putString(MediaMetadata.KEY_ALBUM_ARTIST, this.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
-        it.addImage(WebImage(Uri.parse(this.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI))))
+        if (this.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI) != null) {
+            it.addImage(WebImage(Uri.parse(this.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI))))
+        }
     }
     val mediaInfo = MediaInfo.Builder(this.mediaUri.toString())
             .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED).setContentType(MimeTypes.AUDIO_UNKNOWN)
             .setMetadata(metadata).build()
 
-     return MediaQueueItem.Builder(mediaInfo).build()
+    return MediaQueueItem.Builder(mediaInfo).build()
 }
 
 
