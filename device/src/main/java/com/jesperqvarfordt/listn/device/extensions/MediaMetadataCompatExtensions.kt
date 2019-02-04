@@ -71,7 +71,7 @@ inline val MediaMetadataCompat.displayIcon
     get() = getBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON)
 
 inline val MediaMetadataCompat.displayIconUri: Uri
-    get() = Uri.parse(this.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI))
+    get() = Uri.parse(this.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI) ?: "")
 
 inline val MediaMetadataCompat.mediaUri: Uri
     get() = Uri.parse(this.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI))
@@ -229,5 +229,14 @@ fun MediaMetadataCompat.toMediaQueueItem(): MediaQueueItem {
 
     return MediaQueueItem.Builder(mediaInfo).build()
 }
+
+/*fun MediaQueueItem.toMediaDescriptionCompat(): MediaDescriptionCompat {
+    val builder = MediaDescriptionCompat.Builder()
+    builder.apply {
+        setTitle(this@toMediaDescriptionCompat.media.metadata.getString(MediaMetadata.KEY_TITLE))
+        setSubtitle(this@toMediaDescriptionCompat.media.metadata.getString(MediaMetadata.KEY_ALBUM_ARTIST))
+        //setIconUri(this@toMediaDescriptionCompat.media.metadata.getString(MediaMetadata.KEY_))
+    }
+}*/
 
 

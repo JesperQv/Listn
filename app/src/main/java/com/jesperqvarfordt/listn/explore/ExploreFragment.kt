@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import com.google.android.gms.cast.framework.CastButtonFactory
 import com.jesperqvarfordt.listn.App
 import com.jesperqvarfordt.listn.R
 import com.jesperqvarfordt.listn.common.extensions.hideKeyboard
@@ -65,12 +66,19 @@ class ExploreFragment : Fragment(),
             return@OnEditorActionListener false
         })
 
-        root.backButton.setOnClickListener({
+        root.backButton.setOnClickListener {
             presenter.backClicked()
-        })
+        }
 
         return root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //TODO fix margin in layout for this
+        CastButtonFactory.setUpMediaRouteButton(activity, castButton)
+    }
+
 
 
     private fun performSearch(query: String) {

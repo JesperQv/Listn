@@ -60,8 +60,13 @@ constructor(private val context: Context,
     }
 
     override fun tearDown() {
+        //TODO maybe not stop here?
         if (mediaBrowser != null && mediaBrowser!!.isConnected) {
-            mediaController.transportControls.stop()
+            //mediaController.transportControls.stop()
+            //TODO test stuff remove bundle
+            val bundle = Bundle()
+            bundle.putParcelable(PlayerService.argNotificationConfig, notificationConfig)
+            mediaBrowser?.sendCustomAction(PlayerService.ACTION_RELEASE_BASE_PLAYER, null, null)
             mediaController.unregisterCallback(mediaControllerCallback)
             mediaBrowser?.unsubscribe(mediaBrowser!!.root)
             mediaBrowser?.disconnect()
@@ -143,7 +148,7 @@ constructor(private val context: Context,
     private fun updateNotification() {
         val bundle = Bundle()
         bundle.putParcelable(PlayerService.argNotificationConfig, notificationConfig)
-        mediaBrowser?.sendCustomAction(PlayerService.NOTIFICATION_ACTION, bundle, null)
+        mediaBrowser?.sendCustomAction(PlayerService.ACTION_NOTIFICATION, bundle, null)
     }
 
     inner class MediaBrowserConnectionCallback : MediaBrowserCompat.ConnectionCallback() {
@@ -198,7 +203,7 @@ constructor(private val context: Context,
             mediaInfoObservable.onNext(MediaInfo(metadata?.id?.toInt() ?: 0,
                     metadata?.title,
                     metadata?.displaySubtitle,
-                    metadata?.displayIconUri.toString(),
+                    metadata?.displayIconUri?.toString(),
                     metadata?.duration?.toInt() ?: 0))
         }
 

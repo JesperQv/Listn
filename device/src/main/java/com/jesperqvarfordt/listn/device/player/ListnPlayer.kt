@@ -3,6 +3,7 @@ package com.jesperqvarfordt.listn.device.player
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.support.v4.media.MediaDescriptionCompat
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
@@ -10,12 +11,24 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.framework.CastContext
 
 class ListnPlayer(context: Context,
-                  private val stateChanged: (playWhenReady: Boolean, currentPos: Long, playbackState: Int) -> Unit) :
+                  private val stateChanged: (playWhenReady: Boolean, currentPos: Long, playbackState: Int) -> Unit,
+                  private val playerToggled: () -> Unit) :
         CastExtendedPlayer, CastPlayer.SessionAvailabilityListener {
+
+    private val window = Timeline.Window()
+
+    override fun getMediaDescription(index: Int): MediaDescriptionCompat {
+        if (currentPlayer == exoPlayer) {
+            return currentTimeline.getWindow(index, window, true)?.tag as MediaDescriptionCompat
+        } else {
+            return preparedCastSource[index].media.metadata.getString(MediaMetadata.KEY_TITLE) as MediaDescriptionCompat
+        }
+    }
 
     private val exoPlayer = ExoPlayerFactory.newSimpleInstance(context, DefaultTrackSelector())
     private val castPlayer = CastPlayer(CastContext.getSharedInstance(context))
@@ -24,7 +37,6 @@ class ListnPlayer(context: Context,
     private var currentItemIndex = C.INDEX_UNSET
     private var preparedCastSource: Array<MediaQueueItem> = emptyArray()
     private var preparedMediaSource: MediaSource? = null
-
     private val handler = Handler()
 
     init {
@@ -78,7 +90,6 @@ class ListnPlayer(context: Context,
         } else {
             // This is the initial setup. No need to save any state.
         }
-
         currentPlayer = newPlayer
         currentPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -87,17 +98,20 @@ class ListnPlayer(context: Context,
         })
 
         if (windowIndex != C.INDEX_UNSET) {
-            prepare(preparedMediaSource ?: ConcatenatingMediaSource(), preparedCastSource, windowIndex, playbackPositionMs)
+            prepare(preparedMediaSource
+                    ?: ConcatenatingMediaSource(), preparedCastSource, windowIndex, playbackPositionMs)
             currentPlayer.playWhenReady = playWhenReady
         }
     }
 
     override fun onCastSessionAvailable() {
         setCurrentPlayer(castPlayer)
+        playerToggled.invoke()
     }
 
     override fun onCastSessionUnavailable() {
         setCurrentPlayer(exoPlayer)
+        playerToggled.invoke()
     }
 
     override fun getContentDuration(): Long {
@@ -237,7 +251,8 @@ class ListnPlayer(context: Context,
     }
 
     override fun seekTo(windowIndex: Int, positionMs: Long) {
-        currentPlayer.seekTo(windowIndex, positionMs)
+        if (windowIndex < currentPlayer.currentTimeline.windowCount)
+            currentPlayer.seekTo(windowIndex, positionMs)
     }
 
     override fun isLoading(): Boolean {
@@ -294,6 +309,12 @@ class ListnPlayer(context: Context,
 
     override fun release() {
         currentPlayer.release()
+        handler.removeCallbacks(tickRunnable)
+    }
+
+    override fun releaseBasePlayer() {
+        exoPlayer.stop()
+        exoPlayer.release()
         handler.removeCallbacks(tickRunnable)
     }
 

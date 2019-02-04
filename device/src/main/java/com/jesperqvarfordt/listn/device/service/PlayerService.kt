@@ -21,8 +21,9 @@ import com.jesperqvarfordt.listn.device.player.*
 class PlayerService : MediaBrowserServiceCompat() {
 
     private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var mediaSessionConnector: MediaSessionConnector
+    private var mediaSessionConnector: MediaSessionConnector? = null
     private lateinit var mediaController: MediaControllerCompat
+    private var playbackPreparer: ExtendedPlaybackPreparer? = null
     private val mediaControllerCallback = MediaControllerCallback()
     private var mediaNotificationManager: MediaNotificationManager? = null
 
@@ -32,6 +33,8 @@ class PlayerService : MediaBrowserServiceCompat() {
         super.onCreate()
         player = ListnPlayer(applicationContext, stateChanged = { playWhenReady, currentPos, playbackState ->
             mediaControllerCallback.stateChanged(playWhenReady, currentPos, playbackState)
+        }, playerToggled = {
+            mediaSessionConnector?.setPlayer(player, playbackPreparer)
         })
         mediaSession = MediaSessionCompat(applicationContext, "ListnMediaSession")
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
@@ -44,10 +47,12 @@ class PlayerService : MediaBrowserServiceCompat() {
             it.registerCallback(mediaControllerCallback)
         }
 
+        val dataSourceFactory = DefaultDataSourceFactory(
+                this, Util.getUserAgent(this, "Listn"), null)
+        playbackPreparer = ExtendedPlaybackPreparer(player, dataSourceFactory)
+
         mediaSessionConnector = MediaSessionConnector(mediaSession).also {
-            val dataSourceFactory = DefaultDataSourceFactory(
-                    this, Util.getUserAgent(this, "Listn"), null)
-            it.setPlayer(player, ExtendedPlaybackPreparer(player, dataSourceFactory))
+            it.setPlayer(player, playbackPreparer)
             it.setQueueNavigator(ExtendedQueueNavigator(mediaSession))
         }
     }
@@ -60,13 +65,19 @@ class PlayerService : MediaBrowserServiceCompat() {
         }
     }
 
+
+
     override fun onCustomAction(action: String, extras: Bundle?, result: Result<Bundle>) {
         super.onCustomAction(action, extras, result)
         when (action) {
-            NOTIFICATION_ACTION -> {
+            ACTION_NOTIFICATION -> {
                 val config = extras?.getParcelable<NotificationConfig>(argNotificationConfig)
                         ?: return
                 mediaNotificationManager = MediaNotificationManager(this, config)
+            }
+            ACTION_RELEASE_BASE_PLAYER -> {
+                player.releaseBasePlayer()
+                stopSelf()
             }
         }
     }
@@ -139,7 +150,8 @@ class PlayerService : MediaBrowserServiceCompat() {
     }
 
     companion object {
-        const val NOTIFICATION_ACTION = "NOTIFICATION_ACTION"
+        const val ACTION_NOTIFICATION = "ACTION_NOTIFICATION"
+        const val ACTION_RELEASE_BASE_PLAYER = "ACTION_RELEASE_BASE_PLAYER"
         const val argNotificationConfig = "notificationConfig"
     }
 }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     tools:context="com.jesperqvarfordt.listn.explore.ExploreFragment">
 
@@ -36,6 +37,7 @@
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@id/backButton"
                 android:animateLayoutChanges="true"
+                android:layout_marginRight="40dp"
                 android:orientation="horizontal"
                 android:visibility="visible">
 
@@ -59,7 +61,17 @@
                     android:padding="5dp"
                     android:src="@drawable/ic_search_white_24dp" />
 
+
             </RelativeLayout>
+
+            <android.support.v7.app.MediaRouteButton
+                android:id="@+id/castButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:mediaRouteTypes="user"
+                app:mediaRouteButtonTint="@color/white" />
 
             <RelativeLayout
                 android:id="@+id/titleContainer"

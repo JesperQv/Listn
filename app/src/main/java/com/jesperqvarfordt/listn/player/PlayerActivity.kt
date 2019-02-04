@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.google.android.gms.cast.framework.CastButtonFactory
-import com.google.android.gms.cast.framework.CastContext
 import com.jesperqvarfordt.listn.App
 import com.jesperqvarfordt.listn.R
 import com.jesperqvarfordt.listn.databinding.PlayerActivityBinding
@@ -21,7 +20,7 @@ class PlayerActivity : AppCompatActivity(), PlayerContract.View {
     lateinit var presenter: PlayerContract.Presenter
     private lateinit var binding: PlayerActivityBinding
 
-    private lateinit var castContext: CastContext
+    //private lateinit var castContext: CastContext
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +32,7 @@ class PlayerActivity : AppCompatActivity(), PlayerContract.View {
                 .build()
                 .inject(this)
         setUpListeners()
-        castContext = CastContext.getSharedInstance(this)
+        //castContext = CastContext.getSharedInstance(this)
         CastButtonFactory.setUpMediaRouteButton(this, chromeCastButton)
     }
 
