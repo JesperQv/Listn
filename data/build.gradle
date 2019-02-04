@@ -39,6 +39,8 @@ android {
 dependencies {
     implementation project(':domain')
 
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
+
     implementation "com.squareup.retrofit2:retrofit:$rootPath.retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootPath.retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$rootPath.retrofitVersion"

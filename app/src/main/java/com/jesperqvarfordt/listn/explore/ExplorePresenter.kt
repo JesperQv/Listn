@@ -5,6 +5,8 @@ import com.jesperqvarfordt.listn.domain.model.Chart
 import com.jesperqvarfordt.listn.domain.model.Track
 import com.jesperqvarfordt.listn.domain.usecase.*
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ExplorePresenter
@@ -52,7 +54,16 @@ constructor(private val search: SearchTracksUseCase,
 
     override fun searchClicked(query: String) {
         view?.toggleTrackList()
-        disposables.add(search.execute(query)
+        GlobalScope.launch {
+            val tracks = search.execute(query)
+            if (tracks.isEmpty()) {
+                view?.showEmpty()
+            } else {
+                view?.updateTracks(tracks)
+                imageCache.preloadImages(tracks)
+            }
+        }
+        /*disposables.add(search.execute(query)
                 .subscribe({ tracks ->
                     if (tracks.isEmpty()) {
                         view?.showEmpty()
@@ -62,7 +73,7 @@ constructor(private val search: SearchTracksUseCase,
                     }
                 }, {
                     view?.showError()
-                }))
+                }))*/
     }
 
     override fun trackClicked(tracks: List<Track>, clickedId: Int) {

@@ -11,11 +11,9 @@ import io.reactivex.Observable
 class SCTrackRepository(api: SCApi, mapper: TrackMapper) :
         TrackRepository, SCRepository(api, mapper) {
 
-    override fun search(query: String?): Observable<List<Track>> = api.searchTracks(query)
-            .flatMapIterable { trackList -> trackList }
+    override suspend fun search(query: String?): List<Track> = api.searchTracks(query)
+            .await()
             .map { track -> mapper.map(track) }
-            .toList()
-            .toObservable()
 
     override fun getTracksOnChart(chartUrl: String): Observable<List<Track>> =
             api.getTracksOnChart(chartUrl)

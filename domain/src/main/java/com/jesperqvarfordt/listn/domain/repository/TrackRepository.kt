@@ -5,7 +5,7 @@ import io.reactivex.Observable
 
 interface TrackRepository {
 
-    fun search(query: String?): Observable<List<Track>>
+    suspend fun search(query: String?): List<Track>
 
     fun getTracksOnChart(chartUrl: String): Observable<List<Track>>
 

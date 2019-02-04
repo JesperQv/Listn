@@ -1,5 +1,6 @@
 package com.jesperqvarfordt.listn.dagger.module
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jesperqvarfordt.listn.data.BuildConfig
 import com.jesperqvarfordt.listn.data.api.SCApi
 import com.jesperqvarfordt.listn.data.mapper.TrackMapper
@@ -45,6 +46,7 @@ class SCModule {
         val retrofit = Retrofit.Builder()
                 .baseUrl(BuildConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(client)
                 .build()
