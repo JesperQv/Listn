@@ -5,9 +5,9 @@ import com.jesperqvarfordt.listn.domain.model.Chart
 import com.jesperqvarfordt.listn.domain.model.Track
 import com.jesperqvarfordt.listn.domain.usecase.*
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class ExplorePresenter
 @Inject
@@ -16,18 +16,24 @@ constructor(private val search: SearchTracksUseCase,
             private val getCharts: GetChartsUseCase,
             private val getTracksOnChart: GetTracksOnChartUseCase,
             private val listenToMediaInfo: SubscribeToMediaInfoUseCase,
-            private val imageCache: ImageCache) : ExploreContract.Presenter {
+            private val imageCache: ImageCache) : ExploreContract.Presenter, CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
+    private lateinit var job: Job
 
     private var view: ExploreContract.View? = null
     private val disposables = CompositeDisposable()
 
     override fun subscribe(view: ExploreContract.View) {
+        job = Job()
         this.view = view
         loadChartsAndShow()
         listenToMediaInfo()
     }
 
-    private fun loadChartsAndShow(){
+    private fun loadChartsAndShow() {
         view?.toggleChartList()
         view?.showSearchBar()
         disposables.add(getCharts.execute()
@@ -49,31 +55,23 @@ constructor(private val search: SearchTracksUseCase,
 
     override fun unsubscribe() {
         view = null
+        job.cancel()
         disposables.clear()
     }
 
     override fun searchClicked(query: String) {
         view?.toggleTrackList()
-        GlobalScope.launch {
+        launch {
             val tracks = search.execute(query)
-            if (tracks.isEmpty()) {
-                view?.showEmpty()
-            } else {
-                view?.updateTracks(tracks)
-                imageCache.preloadImages(tracks)
+            withContext(Dispatchers.Main) {
+                if (tracks.isEmpty()) {
+                    view?.showEmpty()
+                } else {
+                    view?.updateTracks(tracks)
+                    imageCache.preloadImages(tracks)
+                }
             }
         }
-        /*disposables.add(search.execute(query)
-                .subscribe({ tracks ->
-                    if (tracks.isEmpty()) {
-                        view?.showEmpty()
-                    } else {
-                        view?.updateTracks(tracks)
-                        imageCache.preloadImages(tracks)
-                    }
-                }, {
-                    view?.showError()
-                }))*/
     }
 
     override fun trackClicked(tracks: List<Track>, clickedId: Int) {
@@ -85,13 +83,20 @@ constructor(private val search: SearchTracksUseCase,
     override fun chartClicked(chart: Chart) {
         view?.toggleTrackList()
         view?.showTitleBar(chart.name)
-        disposables.add(getTracksOnChart.execute(chart)
-                .subscribe({
-                    tracks -> view?.updateTracks(tracks)
+        launch {
+            try {
+                val tracks = getTracksOnChart.execute(chart)
+                withContext(Dispatchers.Main) {
+                    view?.updateTracks(tracks)
                     imageCache.preloadImages(tracks)
-                }, {
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
                     view?.showError()
-                }))
+                }
+            }
+
+        }
     }
 
     override fun backClicked() {

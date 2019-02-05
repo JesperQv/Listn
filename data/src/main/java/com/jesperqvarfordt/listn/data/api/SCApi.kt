@@ -2,7 +2,6 @@ package com.jesperqvarfordt.listn.data.api
 
 import com.jesperqvarfordt.listn.data.model.SCChartResponse
 import com.jesperqvarfordt.listn.data.model.SCTrack
-import io.reactivex.Observable
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,5 +13,5 @@ interface SCApi {
     fun searchTracks(@Query("q") query: String?): Deferred<List<SCTrack>>
 
     @GET
-    fun getTracksOnChart(@Url url: String): Observable<SCChartResponse>
+    fun getTracksOnChart(@Url url: String): Deferred<SCChartResponse>
 }
